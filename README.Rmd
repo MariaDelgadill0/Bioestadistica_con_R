@@ -1,0 +1,3 @@
+## README
+
+Repositorio con codígo en R para el desarrollo de análisis estadístico del ensayo clínico 
