@@ -1,0 +1,592 @@
+---
+title: "Comparación estadística entre el video-laringoscopio Pentax AWS y el laringoscopio Macintosh en pacientes con obesidad mórbida"
+author: Humberto Martínez Bautista, Ricardo A. Rodriguez Ojeda y María de Lourdes
+  Delgadillo Hurtado
+output:
+  bookdown::html_document2:
+    code_folding: show
+    toc: yes
+    number_sections: no
+    toc_float:
+      collapsed: yes
+      smooth_croll: yes
+      toc_depth: 2
+    theme: journal
+    highlight: pygments
+  pdf_document:
+    toc: yes
+bibliography: Referencias.bib
+csl: vancouver.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+
+```
+
+```{css, echo=FALSE}
+.scroll-100 {
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+```
+
+# Introducción 
+
+<div align="justify">
+Las intubaciones traqueales difíciles y fallidas se encuentran entre las principales causas de mortalidad y morbilidad relacionadas con la anestesia.[@Tinker] Dado que una buena visión laríngea facilita la intubación traqueal, se han introducido nuevas tecnologías para mejorar la visualización. Los videolaringoscopios suelen utilizar cámaras en miniatura para facilitar la visualización de la laringe. 
+
+ El Pentax AWS (Figura \@ref(fig:figura1)) es un novedoso videolaringoscopio, disponible en Japón desde 2006, diseñado para facilitar la intubación proporcionando una imagen de vídeo de la glotis. Incorpora una cámara de vídeo en miniatura y un monitor LCD integrado alimentado por pilas. A una cuchilla desechable se acopla al sistema de base. La incorporación de una pantalla LCD permite ver la glotis simultáneamente a la inserción del tubo endotraqueal (ETT). En este sentido, se diferencia de otros videolaringoscopios que utilizan monitores externos. El Pentax AWS también difiere en tener un canal lateral que posiciona guía la ETT. Los informes sugieren que el Pentax AWS puede ayudar a intubar, pero los datos aleatorios siguen siendo escasos.[@Ab] El método estándar para realizar laringoscopia ha sido utilizar el laringoscopio Macintosh (Figura \@ref(fig:figura2)). Siendo la principal diferencia no tener una cámara de video integrada.[@Da] 
+</div>
+
+```{r figura1, echo=FALSE, out.width="30%", fig.cap="Pentax AWS", fig.align = 'center'}
+knitr::include_graphics("C:/Users/bby/OneDrive/Documentos/CIMAT/EstanciasCIMAT2023/ECAs/PracticasR/Laringoscopia_R_Python/Laringoscopia_R_Pyhton/AWS_mit_Tubus.jpg")
+```
+
+```{r figura2, echo=FALSE, out.width="30%", fig.cap="Macintosh hoja #4", fig.align = 'center'}
+knitr::include_graphics("C:/Users/bby/OneDrive/Documentos/CIMAT/EstanciasCIMAT2023/ECAs/PracticasR/Laringoscopia_R_Python/Laringoscopia_R_Pyhton/macintosh.jpg")
+```
+
+```{r echo=FALSE}
+library(vembedr)
+
+embed_url("https://www.youtube.com/watch?v=3InIsTBbFRU&t=6s")%>%
+  use_align("center")%>%
+  use_start_time("6m22")
+```
+
+<div align="justify">
+De acuerdo con la Organización Mundial de la Salud, una persona presenta obesidad cuando su IMC es ≥ a 30 Kg/m2. La fracción de pacientes obesos y con obesidad mórbida está aumentando rápidamente en todo el mundo. La intubación traqueal puede ser en estos pacientes porque el espacio orofaríngeo limitado orofaríngeo puede impedir una visualización adecuada. 
+
+El trabajo consiste en realizar una modelación estadística utilizando la base de datos “laryngoscope” publicada en medicaldata y compararla con los resultados reportados en el artículo  “A Randomized Comparison Between the Pentax AWSVideo Laryngoscope and the Macintosh Laryngoscope in Morbidly Obese Patients”.  
+</div>
+
+# Objetivo
+
+<div align="justify">
+Desarrollo de análisis estadístico comparando el método de laringoscopia Pentax AWS y el laringoscopio Macintosh en pacientes con obesidad mórbida 
+</div>
+
+## Objetivos específicos 
+
+<div align="justify">
+Determinar si la intubación con el Pentax AWS sería más fácil y rápida que con un laringoscopio estándar Macintosh hoja nº 4 en pacientes con obesidad mórbida. 
+</div>
+
+
+# Materiales
+
+## Instalación y activación de librerías
+
+Versión de RStudio: 4.2.2 
+
+Necesitarás las siguientes liberías instaladas en tu servidor para correr el código a lo largo del documento.
+
+```{r}
+list.of.packages <- c("medicaldata", "janitor","dplyr","ggplot2","cowplot","gmodels","rstatix","psych","RColorBrewer","ggpubr","car","stats", "corrplot", "tidyverse","MVN","DescTools","broom","survival","survminer","vembedr")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+```
+
+Activación de liberías
+
+```{r}
+# Bases de datos
+
+library(medicaldata)
+
+# Manejo de datos
+
+library(janitor)
+library(dplyr)
+library(gmodels)
+library(rstatix)
+library(car)
+library(stats)
+library(tidyverse)
+library(MVN)
+library(rmarkdown) 
+library(DescTools)
+library(broom)
+library(survival)
+library(survminer)
+
+# Visualización de datos
+
+library(ggplot2)
+library(cowplot)
+library(psych)
+library(RColorBrewer)
+library(ggpubr)
+library(corrplot)
+
+# Embebir videos de youtube
+library(vembedr)
+```
+
+```{r}
+hist(datos$Edad,breaks = 20)
+```
+```{r tablaKaplan}
+# Creación de función de supervivencia
+
+survObject <- Surv(datos$Tiempo_total_intubacion, as.numeric(datos$Exito_intubacion))
+
+# Creación de curvas de supervivencia 
+
+fit <- survfit(survObject ~ Grupo, data = datos)
+```
+
+De la gráfica \@ref(tab:tablaKaplan) podemos deducir que el laringoscopio Macintosh representado en color rojo es el que mejor % de éxito de intubación ofrece mientras que el laringoscopio Pentax AWS ofrece peores resutados.
+
+¿Es la diferencia estadisticamente significativa?
+
+```{r}
+# 
+
+logRank <- survdiff(survObject ~ datos$Grupo)
+
+pval <- p.val <- 1 - pchisq(logRank$chisq, length(logRank$n) - 1) 
+
+ggsurvplot(fit, data=datos, pval = round(pval,10), xlab="Tiempo", ylab="Exito de intubacion %", conf.int = T) 
+
+```
+
+## Datos laringoscopia
+
+La base de datos se encuentra dentro del paquete `medicaldata`, la cual puedes obtener al mandarla a llamar con el código debajo:
+
+```{r}
+# Base de datos
+
+data(laryngoscope, package="medicaldata" )
+
+# Asignación de variable a la base de datos
+
+datos <- laryngoscope
+```
+
+### Renombración de variables
+
+Vamos a asignar un nuevo nombre a cada una de las variables de modo que éstas contengan un nombre práctico y las podamos manejar de forma rápida y fácil a lo largo del código. Utilizaremos la función `rename` donde los pide declarar el "nuevo nombre" = "nombre antiguo".
+
+```{r}
+datos <- rename(datos, Edad = age, Genero = gender,Estado_fisico = asa , IMC = BMI, Mallampati = Mallampati, Grupo = Randomization, Tiempo_primer_intento = attempt1_time, Exito_primer_intento = attempt1_S_F , Tiempo_segundo_intento = attempt2_time, Metodo_segundo_intento = attempt2_assigned_method, Exito_segundo_intento = attempt2_S_F, Tiempo_tercer_intento = attempt3_time, Metodo_tercer_intento = attempt3_assigned_method, Exito_tercer_intento = attempt3_S_F, Num_Intentos = attempts,  Fracasos = failures, Tiempo_total_intubacion = total_intubation_time, Exito_intubacion = intubation_overall_S_F, Sangrado = bleeding, Nivel_dificultad = ease, Dolor_garganta = sore_throat, Vista_glotis = view)
+```
+
+### Tipos de variables
+
+Es importante determinar las variables tipo factores que se utilizarán en el análisis estadístico. En esta parte utilizamos la función `factor()` en la cual indicamos las variables, sus niveles y las etiquetas de los niveles.   
+
+```{r}
+datos$Genero <- factor(datos$Genero, levels = c(0,1), labels = c("Femenino","Masculino"))
+datos$Estado_fisico <- factor(datos$Estado_fisico, levels = c(1,2,3,4), labels = c("I","II","III","IV"))
+datos$Grupo <- factor(datos$Grupo, levels = c(0,1), labels = c("Macintosh","Pentax_AWS"))
+datos$Exito_primer_intento <- factor(datos$Exito_primer_intento, levels = c(0,1), labels = c("No","Si"))
+datos$Metodo_segundo_intento <- factor(datos$Metodo_segundo_intento, levels = c(0,1), labels = c("No","Si"))
+datos$Exito_segundo_intento  <- factor(datos$Exito_segundo_intento , levels = c(0,1), labels = c("No","Si"))
+datos$Metodo_tercer_intento <- factor(datos$Metodo_tercer_intento, levels = c(0,1), labels = c("No","Si"))
+datos$Exito_tercer_intento <- factor(datos$Exito_tercer_intento, levels = c(0,1), labels = c("No","Si"))
+datos$Fracasos <- factor(datos$Fracasos, levels = c(1,2,3), labels = c("1","2","3"))
+datos$Exito_intubacion <- factor(datos$Exito_intubacion, levels = c(0,1), labels= c("No","Si"))
+datos$Sangrado  <- factor(datos$Sangrado , levels = c(0,1), labels = c("No","Si"))
+#datos$Nivel_dificultad  <- factor(datos$Nivel_dificultad , levels = c(0:100), labels = c(0:100))
+datos$Dolor_garganta  <- factor(datos$Dolor_garganta , levels = c(0,1,2,3), labels = c("Ninguno","Leve","Moderado","Severo"))
+datos$Vista_glotis  <- factor(datos$Vista_glotis , levels = c(0,1), labels = c("Grado 1 o 2","Grado 3 o 4"))
+datos$Intentos_factor <- factor(datos$Num_Intentos, levels = c(1,2,3))
+datos$Mallampati_factor <- factor(datos$Mallampati, levels = c(1,2,3,4), labels = c("I","II", "III", "IV"))
+```
+
+De igual forma creamos variables auxiliares que nos servirán más delante en análisis estadístico, esto basta con mencionar el nombre de la base de datos seguido de un **$** y el nombre de la variable a crear, como lo es el caso de **Intentos_factor** y **Mallampati_factor**.
+
+# Métodos
+
+## Análisis estadístico
+
+### Análisis univariado
+
+Para obtener un panorama general sobre la estructura de la base de datos y el tipo de cada una de las variables podemos utilizar la función `str()`.
+
+```{r, class.output="scroll-100"}
+# Estructura de los datos
+
+str(datos)
+```
+
+Así sabemos que tenemos una base de datos con información de 99 pacientes y 24 variables, de las cuales 9 son tipo numéricas y 15 categóricas con sus respectivos niveles.
+
+## Estadística descriptiva
+
+A continuación obtenemos la estadística descriptiva para cada una de las variables utilizando la función `describeBy` la cual nos permite agrupar los datos con respecto al grupo de tratamiento.
+
+Esta parte es muy importante ya que es la primera descripción del comportamiento de las variables. Tenemos parámetros tales como:
+
++ n: tamaño de muestra
++ mean: Media muestral
++ sd: desviación estándar
++ median: mediana
++ min: mínimo
++ max: máximo
++ skew: sesgo (+) positivo o (-) negativo
++ kurtosis: curtosis (determina el grado de concentración de los valores de una variable alrededor de la zona central de la distribución de frecuencias)[@curtosis]
+
+Nota: Las variables tipo factores son señaladas con un * 
+
+```{r, class.output="scroll-100"}
+# Estadística decriptiva
+
+descri <- describeBy(datos, group = datos$Grupo)
+
+# Estadística descriptiva para grupo Macintosh
+
+descri$Macintosh[,c(2,3,4,5,8,9,11,12)]
+```
+
+
+```{r, class.output="scroll-100"}
+# Estadística descriptiva para grupo Pentax_AWS
+
+descri$Pentax_AWS[,c(2,3,4,5,8,9,11,12)]
+```
+
+Otra manera de coseguir estadísticas descriptivas, en donde también se canculan los cuantiles para cada una de las variables, es utilizando la función `summary()`.
+
+```{r, results='hide'}
+# Estadisticas descriptivas 
+
+# Grupo Macintosh
+
+datos %>%
+  filter(Grupo == "Macintosh") %>%
+  select(Tiempo_total_intubacion) %>%
+  summary()
+
+# Grupo Pentax AWS
+
+datos %>%
+  filter(Grupo == "Pentax_AWS") %>%
+  select(Tiempo_total_intubacion) %>%
+  summary()
+```
+
+Mediana [cuantil1, cuantil3]
+
+Los pacientes en el grupo Macintosh fueron intubados en 26 [22,29] segundos , mientras que en el grupo Pentax AWS fueron intubados en 38 [31,50] segundos. 
+
+## Normalidad univariada
+
+Para evaluar la normalidad de las variables cuantitativas utilizamos la funcion `mvn()` con la cual podemos tanto veficar si una variable sigue una distribución normal, como generar diferentes tipos de gráficos que nos ayudan a visualizar la distribución de las variables.
+
+```{r}
+# test de normalidad univariante
+# Test de Shapiro-Wilks
+
+m1 <- mvn(datos[,c(1,4,7,9,12)] , univariatePlot = "histogram" , univariateTest = "SW", desc = FALSE)
+m1$univariateNormality
+
+m2 <- mvn(datos[,c(15,17,20)] , univariatePlot = "histogram" , univariateTest = "SW", desc = FALSE)
+m2$univariateNormality
+```
+
+## Análisis bivariado
+
+### Pruebas de suma de rangos de Wilcoxon
+
+<div align="justify">
+
+Utilizaremos la prueba de suma de rangos de wilcoxon como una alternativa a la prueba t de Student, dado que la distribución que siguen las variables sobre las cuales se realizarán las comparaciones no es distribución normal. 
+
+"La prueba de la U de Mann-Whitney, también denominada prueba de la suma de rangos de Wilcoxon, es una prueba no paramétrica que permite comparar las medianas de una variable cuantitativa para las dos categorías de una variable cualitativa dicotómica. Se aplica cuando no se pueden asumir los supuestos necesarios para utilizar la prueba de la t de Student" [@Mann].
+
+A diferencia de la prueba t de Student, la prueba U de Mann-Whitney permite sacar diferentes conclusiones sobre los datos en función de las suposiciones que se hagan sobre la distribución de los mismos. 
+
+Estas conclusiones pueden ir desde simplemente afirmar si las dos poblaciones difieren hasta determinar si hay diferencias en las medianas entre los grupos. Estas diferentes conclusiones dependen de la forma de las distribuciones de los datos.
+
+Hipótesis nula ($H_0$): No hay diferencia significativa entre las distribuciones de las dos muestras. 
+
+Hipótesis alternativa ($H_1$): Existe una diferencia significativa entre las distribuciones de las dos muestras. 
+
+Si el valor p resultante es menor que el nivel de significancia predefinido (generalmente 0.05), se rechaza la hipótesis nula, lo que sugiere que hay evidencia suficiente para afirmar que existe una diferencia significativa entre las dos muestras.  
+
+Utilizaremos la prueba suma de rangos de Wilcoxon, la cual se puede encontrar con la función `wilcox.test()`, donde se indican los valores a comparar.
+
+Primero crearemos dos subgrupos, uno para cada grupo de tratamiento los cuales contengas las variables sobre las cuales se realizarán las comparaciones.
+</div>
+
+```{r}
+# Creación de subgrupos
+
+# Subgrupo de variables para el grupo Macintosh
+
+prueba_Macintosh <- datos %>%
+                  filter(datos$Grupo == "Macintosh") %>%
+                  select(Num_Intentos, Tiempo_total_intubacion, Nivel_dificultad, Mallampati, Sangrado, Dolor_garganta)
+
+# Subgrupo de variables para el grupo Pentax_AWS
+
+prueba_Pentax <- datos %>%
+               filter(datos$Grupo == "Pentax_AWS") %>%
+               select(Num_Intentos, Tiempo_total_intubacion, Nivel_dificultad, Mallampati, Sangrado, Dolor_garganta)
+```
+
+```{r}
+# Prueba de suma de rangos de Wilcoxon para el número de intentos de intubación
+
+wilcox.test(prueba_Macintosh$Num_Intentos , prueba_Pentax$Num_Intentos)
+```
+<div align="justify">
+La prueba arroja un valor p > α=0.05, por lo cual no se puede rechazar $H_0$, es decir, que no existe una diferencia estadísticamente significativa entre la mediana del número de intentos de intubación  del grupo Macintosh y Pentax AWS.
+</div>
+
+```{r}
+# Prueba de suma de rangos de Wilcoxon para la escala de Mallampati
+
+wilcox.test(prueba_Macintosh$Mallampati, prueba_Pentax$Mallampati)
+```
+<div align="justify">
+La prueba arroja un valor p > α=0.05, por lo cual no se puede rechazar $H_0$, es decir, que no existe una diferencia estadísticamente significativa entre la mediana de la escala de Mallampati del grupo Macintosh y Pentax AWS.
+</div>
+
+
+## Kaplan Meier
+
+El procedimiento de Kaplan-Meier es una técnica estadística no paramétrica utilizada para estimar la función de supervivencia en estudios de supervivencia o análisis de tiempo hasta un evento. El análisis de supervivencia se enfoca en estudiar el tiempo transcurrido hasta que se produce un evento de interés en una muestra de individuos o elementos. 
+
+procedimiento Kaplan-Meier construye una curva de supervivencia al estimar la función de supervivencia S(t) en diferentes puntos de tiempo. La curva de supervivencia muestra cómo la probabilidad de supervivencia cambia a lo largo del tiempo. Para estimar S(t), se utilizan las tasas de supervivencia en cada intervalo de tiempo basadas en el número de eventos ocurridos y la cantidad de individuos en riesgo de experimentar el evento en cada intervalo.[@Wayne]
+
+En esta práctica se utilizará la prueba de Kaplan-Meier para estimar el éxito en el porcentaje de intubación a lo largo del tiempo. 
+
+```{r}
+# Ajusta el modelo de supervivencia para el grupo 'Macintosh'
+fit_macintosh <- survfit(Surv(Tiempo_total_intubacion, Exito_intubacion) ~ Grupo, data = datos[datos$Grupo == "Macintosh",])
+
+# Ajusta el modelo de supervivencia para el grupo 'Pentax_AWS'
+fit_pentax_aws <- survfit(Surv(Tiempo_total_intubacion, Exito_intubacion) ~ Grupo, data = datos[datos$Grupo == "Pentax_AWS",])
+
+# Grafica las curvas de supervivencia para ambos grupos
+par(mfrow = c(1, 1))  # Organiza el gráfico en una sola fila
+
+# Coloca las etiquetas del eje Y en formato de porcentajes invertidos
+options(scipen=999)  # Evita la notación científica en los ejes
+
+# Grafica la curva de supervivencia para el grupo 'Macintosh'
+plot(fit_macintosh, col = "blue", lwd = 2, main = "Curvas de Supervivencia de Kaplan-Meier",
+     xlab = "Tiempo total de incubación (s)", ylab = "% de exito de intubación", xlim = c(0, max(datos$Tiempo_total_intubacion)),
+     ylim = c(1, 0), yaxt = "n")  # Invierte el eje Y
+
+# Grafica la curva de supervivencia para el grupo 'Pentax_AWS'
+lines(fit_pentax_aws, col = "red", lwd = 2)
+
+# Modifica las etiquetas del eje Y para mostrar porcentajes invertidos
+porcentajes_invertidos <- seq(0, 100, by = 10)
+etiquetas_eje_y <- sprintf("%1.0f%%", rev(porcentajes_invertidos))
+axis(2, at = rev(porcentajes_invertidos) / 100, labels = etiquetas_eje_y)
+
+# Agrega leyendas
+legend("topleft", legend = c("Macintosh", "Pentax_AWS"), col = c("blue", "red"), lwd = 2)
+
+# Agrega etiquetas de tamaño de muestra en la parte de abajo a la derecha
+muestra_macintosh <- sum(datos$Grupo == "Macintosh")
+muestra_pentax_aws <- sum(datos$Grupo == "Pentax_AWS")
+muestra_texto <- paste("N Macintosh=", muestra_macintosh, "  N Pentax AWS =", muestra_pentax_aws)
+
+text(x = 40, y = 0, labels = muestra_texto, pos = 4, adj = 1)
+```
+
+## Pruebas de Fisher
+
+Evaluación del efecto de tratamiento sobre las variables: éxito de intubación en el primer intento, éxito de intubación en general, sagrando y visibilidad de la glotis, mediante la prueba exacta de Fisher.
+
+La prueba exacta de Fisher es una prueba estadística utilizada para analizar la asociación entre dos variables categóricas en una tabla de contingencia 2x2. Esta prueba calcula la probabilidad de obtener la distribución de frecuencias observadas. Si la probabilidad resultante es menor a 0.05 se rechaza la hipótesis nula y se concluye que hay evidencia suficiente para afirmar la asociación entre dos variables categóricas.[@Ro]
+
+Hipótesis nula ($H_0$): No hay asociación entre las dos variables categóricas; es decir, la distribución de las frecuencias es independiente. 
+
+Hipótesis alternativa ($H_1$): Existe asociación entre las dos variables categóricas. 
+
+
+```{r}
+# Creación de tablas de contingencia
+
+# Tratamiento vs éxito de intubación en el primer intento
+
+t1 <- table(datos$Grupo, datos$Exito_primer_intento)
+
+# Tratamiento vs éxito de intubación en general
+
+t2 <- table(datos$Grupo, datos$Exito_intubacion)
+
+# Tratamiento vs sagrando
+
+t3 <- table(datos$Grupo, datos$Sangrado)
+
+# Tratamiento vs visibilidad de la glotis
+
+t4 <- table(datos$Grupo, datos$Vista_glotis)
+
+# Tratamiento vs dolor de garganta
+
+t5 <- table(datos$Grupo, datos$Dolor_garganta)
+```
+
+Odds ratio: measure of how far from independence the 2x2 table is
+H_O: odds ratio = 0 (no asociación)
+H_a: odds ratio = 1 (asociación)
+
+```{r}
+# Prueba exacta e Fisher para tratamiento vs éxito de intubación en el primer intento
+
+fisher.test(t1)
+```
+
+Una vez realizada la prueba exacta de Fisher se tiene un valor p > $\alpha$ = 0.05, por lo cual no existe evidencia estadística suficiente para rechazar ($H_0$: No existe asociación entre las variables), es decir, que el tratamiento no tiene un efecto sobre el éxito de intubación en el primer intento.
+
+
+```{r}
+# Prueba exacta e Fisher para tratamiento vs éxito de intubación en general
+
+fisher.test(t2)
+```
+
+```{r}
+# Prueba exacta e Fisher para tratamiento vs sagrando
+
+fisher.test(t3)
+```
+
+```{r}
+# Prueba exacta e Fisher para tratamiento vs visibilidad de la glotis
+
+fisher.test(t4)
+```
+```{r}
+# Prueba exacta e Fisher para tratamiento vs dolor de garganta
+
+fisher.test(t5)
+```
+
+### Intervalos de confianza a 95% para la proporción de éxito de intubación en el primero intento y éxito de intubación en general
+
+```{r}
+# Extracción de columna de éxito de intubación en el primer intento por grupo
+
+# Éxito de intubación en el primer intento en grupo Macintosh
+
+Exito_1int_Macintosh <- datos %>%
+                  filter(datos$Grupo == "Macintosh") %>%
+                  select(Exito_primer_intento)
+
+# Éxito de intubación en el primer intento en grupo Pentax_AWS
+
+Exito_1int_Pentax_AWS <- datos %>%
+               filter(datos$Grupo == "Pentax_AWS") %>%
+               select(Exito_primer_intento)
+
+```
+
+
+```{r}
+# Conteo de éxito de intubación en el primer intento para cada grupo
+
+# Conteo en grupo Macintosh
+
+Exito_1int_Macintosh %>%  
+  tabyl(Exito_primer_intento) %>% 
+  adorn_totals("row")
+
+# Conteo en grupo Pentax_AWS
+
+Exito_1int_Pentax_AWS %>%  
+  tabyl(Exito_primer_intento) %>% 
+  adorn_totals("row")
+```
+
+```{r}
+# Intervalos de confianza a 95% para el éxito de intubación en el primer intento 
+# Metodo Wilson (default)
+
+# Intervalo de confianza a 95% para el éxito de intubación en el primer intento para grupo Macintosh
+
+BinomCI(45,49,conf.level=0.95)
+
+# Intervalo de confianza a 95% para el éxito de intubación en el primer intento para grupo Pentax_AWS
+
+BinomCI(43,50,conf.level=0.95)
+```
+
+
+```{r}
+# Extracción de columna de éxito de intubación en general por grupo
+
+# Éxito de intubación en general en grupo Macintosh
+
+Exito_gen_Macintosh <- datos %>%
+                  filter(datos$Grupo == "Macintosh") %>%
+                  select(Exito_intubacion)
+
+# Éxito de intubación en general en grupo Pentax_AWS
+
+Exito_gen_Pentax_AWS <- datos %>%
+               filter(Grupo == "Pentax_AWS") %>%
+               select(Exito_intubacion)
+
+```
+
+
+```{r}
+# Conteo de éxito de intubación en general para cada grupo
+
+# Conteo en grupo Macintosh
+
+Exito_gen_Macintosh %>%  
+  tabyl(Exito_intubacion) %>% 
+  adorn_totals("row")
+
+# Conteo en grupo Pentax_AWS
+
+Exito_gen_Pentax_AWS %>% 
+  tabyl(Exito_intubacion) %>% 
+  adorn_totals("row")
+
+```
+
+```{r}
+# Intervalos de confianza a 95% para el éxito de intubación en general
+
+# Intervalo de confianza a 95% para el éxito de intubación en general para grupo Macintosh
+
+BinomCI(49,49,conf.level=0.95)
+
+# Intervalo de confianza a 95% para el éxito de intubación en general para grupo Pentax_AWS
+
+BinomCI(46,50,conf.level=0.95)
+
+# 45 (resultado en el articulo)
+```
+
+## ANOVA
+
+ANOVA (Análisis de Varianza) es una técnica estadística utilizada para comparar las medias de tres o más grupos diferentes y determinar si existe alguna diferencia significativa entre ellos. El objetivo principal del ANOVA es evaluar si las diferencias observadas en las medias de los grupos son el resultado de la variación aleatoria o si existen diferencias reales y significativas. 
+
+En el análisis de varianza, se parte de la hipótesis nula (H0) de que no hay diferencia significativa entre las medias de los grupos. Luego, se realiza una prueba de hipótesis para determinar si existe evidencia suficiente para rechazar la hipótesis nula a favor de la hipótesis alternativa (H1), que indica que al menos una de las medias de los grupos es diferente.[@Be]
+
+```{r}
+modelo <- lm(datos$Nivel_dificultad~datos$Grupo)
+
+summary(modelo)
+```
+```{r}
+modelo2 <- lm(datos$Dolor_garganta~datos$Grupo)
+
+summary(modelo2)
+```
+
+# Gráficas
+
+# Referencias
+
+
