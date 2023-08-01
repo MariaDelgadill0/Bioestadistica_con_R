@@ -3,8 +3,9 @@ title: "Comparación estadística entre el video-laringoscopio Pentax AWS y el l
 author: Humberto Martínez Bautista, Ricardo A. Rodriguez Ojeda y María de Lourdes
   Delgadillo Hurtado
 output:
+  pdf_document:
+    toc: yes
   bookdown::html_document2:
-    code_folding: show
     toc: yes
     number_sections: no
     toc_float:
@@ -13,8 +14,7 @@ output:
       toc_depth: 2
     theme: journal
     highlight: pygments
-  pdf_document:
-    toc: yes
+    
 bibliography: Referencias.bib
 csl: vancouver.csl
 ---
@@ -129,33 +129,6 @@ library(corrplot)
 library(vembedr)
 ```
 
-```{r}
-hist(datos$Edad,breaks = 20)
-```
-```{r tablaKaplan}
-# Creación de función de supervivencia
-
-survObject <- Surv(datos$Tiempo_total_intubacion, as.numeric(datos$Exito_intubacion))
-
-# Creación de curvas de supervivencia 
-
-fit <- survfit(survObject ~ Grupo, data = datos)
-```
-
-De la gráfica \@ref(tab:tablaKaplan) podemos deducir que el laringoscopio Macintosh representado en color rojo es el que mejor % de éxito de intubación ofrece mientras que el laringoscopio Pentax AWS ofrece peores resutados.
-
-¿Es la diferencia estadisticamente significativa?
-
-```{r}
-# 
-
-logRank <- survdiff(survObject ~ datos$Grupo)
-
-pval <- p.val <- 1 - pchisq(logRank$chisq, length(logRank$n) - 1) 
-
-ggsurvplot(fit, data=datos, pval = round(pval,10), xlab="Tiempo", ylab="Exito de intubacion %", conf.int = T) 
-
-```
 
 ## Datos laringoscopia
 
@@ -398,6 +371,35 @@ muestra_texto <- paste("N Macintosh=", muestra_macintosh, "  N Pentax AWS =", mu
 text(x = 40, y = 0, labels = muestra_texto, pos = 4, adj = 1)
 ```
 
+```{r}
+hist(datos$Edad,breaks = 20)
+```
+
+```{r tablaKaplan}
+# Creación de función de supervivencia
+
+survObject <- Surv(datos$Tiempo_total_intubacion, as.numeric(datos$Exito_intubacion))
+
+# Creación de curvas de supervivencia 
+
+fit <- survfit(survObject ~ Grupo, data = datos)
+```
+
+De la gráfica \@ref(tab:tablaKaplan) podemos deducir que el laringoscopio Macintosh representado en color rojo es el que mejor % de éxito de intubación ofrece mientras que el laringoscopio Pentax AWS ofrece peores resutados.
+
+¿Es la diferencia estadisticamente significativa?
+
+```{r}
+# 
+
+logRank <- survdiff(survObject ~ datos$Grupo)
+
+pval <- p.val <- 1 - pchisq(logRank$chisq, length(logRank$n) - 1) 
+
+ggsurvplot(fit, data=datos, pval = round(pval,10), xlab="Tiempo", ylab="Exito de intubacion %", conf.int = T) 
+
+```
+
 ## Pruebas de Fisher
 
 Evaluación del efecto de tratamiento sobre las variables: éxito de intubación en el primer intento, éxito de intubación en general, sagrando y visibilidad de la glotis, mediante la prueba exacta de Fisher.
@@ -580,9 +582,9 @@ modelo <- lm(datos$Nivel_dificultad~datos$Grupo)
 summary(modelo)
 ```
 ```{r}
-modelo2 <- lm(datos$Dolor_garganta~datos$Grupo)
+#modelo2 <- lm(datos$Dolor_garganta~datos$Grupo)
 
-summary(modelo2)
+#summary(modelo2)
 ```
 
 # Gráficas
