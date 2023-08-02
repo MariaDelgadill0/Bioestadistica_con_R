@@ -3,8 +3,6 @@ title: "Comparación estadística entre el video-laringoscopio Pentax AWS y el l
 author: Humberto Martínez Bautista, Ricardo A. Rodriguez Ojeda y María de Lourdes
   Delgadillo Hurtado
 output:
-  pdf_document:
-    toc: yes
   bookdown::html_document2:
     toc: yes
     number_sections: no
@@ -36,21 +34,32 @@ knitr::opts_chunk$set(
 }
 ```
 
+# Prefacio
+
+<div align="justify">
+Este document fue creado con el propósito de insentivar el uso de software libre estadístico para el desarrollo de ensayos clínicos, para los profesionales en el área de la salud y estadísticos.
+Se asume conocimiento previo de primer nivel de bioestadística.
+</div>
+
 # Introducción 
 
 <div align="justify">
 Las intubaciones traqueales difíciles y fallidas se encuentran entre las principales causas de mortalidad y morbilidad relacionadas con la anestesia.[@Tinker] Dado que una buena visión laríngea facilita la intubación traqueal, se han introducido nuevas tecnologías para mejorar la visualización. Los videolaringoscopios suelen utilizar cámaras en miniatura para facilitar la visualización de la laringe. 
 
- El Pentax AWS (Figura \@ref(fig:figura1)) es un novedoso videolaringoscopio, disponible en Japón desde 2006, diseñado para facilitar la intubación proporcionando una imagen de vídeo de la glotis. Incorpora una cámara de vídeo en miniatura y un monitor LCD integrado alimentado por pilas. A una cuchilla desechable se acopla al sistema de base. La incorporación de una pantalla LCD permite ver la glotis simultáneamente a la inserción del tubo endotraqueal (ETT). En este sentido, se diferencia de otros videolaringoscopios que utilizan monitores externos. El Pentax AWS también difiere en tener un canal lateral que posiciona guía la ETT. Los informes sugieren que el Pentax AWS puede ayudar a intubar, pero los datos aleatorios siguen siendo escasos.[@Ab] El método estándar para realizar laringoscopia ha sido utilizar el laringoscopio Macintosh (Figura \@ref(fig:figura2)). Siendo la principal diferencia no tener una cámara de video integrada.[@Da] 
+ El Pentax AWS (Figura \@ref(fig:figura1)) es un novedoso videolaringoscopio, disponible en Japón desde 2006, diseñado para facilitar la intubación proporcionando una imagen de vídeo de la glotis. Incorpora una cámara de vídeo en miniatura y un monitor LCD integrado alimentado por pilas. A una cuchilla desechable se acopla al sistema de base. La incorporación de una pantalla LCD permite ver la glotis simultáneamente a la inserción del tubo endotraqueal (ETT). En este sentido, se diferencia de otros videolaringoscopios que utilizan monitores externos. El Pentax AWS también difiere en tener un canal lateral que posiciona guía la ETT. Los informes sugieren que el Pentax AWS puede ayudar a intubar, pero los datos aleatorios siguen siendo escasos.[@Ab] El método estándar para realizar laringoscopia ha sido utilizar el laringoscopio Macintosh hoja #4 (Figura \@ref(fig:figura2)). Siendo la principal diferencia no tener una cámara de video integrada.[@Da] 
 </div>
 
-```{r figura1, echo=FALSE, out.width="30%", fig.cap="Pentax AWS", fig.align = 'center'}
+```{r figura1, echo=FALSE, out.width="20%", fig.cap="Pentax AWS", fig.align = 'center'}
 knitr::include_graphics("C:/Users/bby/OneDrive/Documentos/CIMAT/EstanciasCIMAT2023/ECAs/PracticasR/Laringoscopia_R_Python/Laringoscopia_R_Pyhton/AWS_mit_Tubus.jpg")
 ```
 
-```{r figura2, echo=FALSE, out.width="30%", fig.cap="Macintosh hoja #4", fig.align = 'center'}
+```{r figura2, echo=FALSE, out.width="20%", fig.cap="Macintosh hoja #4", fig.align = 'center'}
 knitr::include_graphics("C:/Users/bby/OneDrive/Documentos/CIMAT/EstanciasCIMAT2023/ECAs/PracticasR/Laringoscopia_R_Python/Laringoscopia_R_Pyhton/macintosh.jpg")
 ```
+
+<div align="justify">
+En el siguiente video se muestra una representación del procedimiento de intubación de pacientes, realizado con ambos métodos. Apatir del tiempo 6:22 min se encuentra el 
+</div>
 
 ```{r echo=FALSE}
 library(vembedr)
@@ -61,9 +70,11 @@ embed_url("https://www.youtube.com/watch?v=3InIsTBbFRU&t=6s")%>%
 ```
 
 <div align="justify">
-De acuerdo con la Organización Mundial de la Salud, una persona presenta obesidad cuando su IMC es ≥ a 30 Kg/m2. La fracción de pacientes obesos y con obesidad mórbida está aumentando rápidamente en todo el mundo. La intubación traqueal puede ser en estos pacientes porque el espacio orofaríngeo limitado orofaríngeo puede impedir una visualización adecuada. 
+De acuerdo con la Organización Mundial de la Salud, una persona presenta obesidad cuando su IMC es ≥ a 30 Kg/m2. La fracción de pacientes obesos y con obesidad mórbida está aumentando rápidamente en todo el mundo. La intubación traqueal puede ser en estos pacientes porque el espacio orofaríngeo limitado puede impedir una visualización adecuada. 
 
-El trabajo consiste en realizar una modelación estadística utilizando la base de datos “laryngoscope” publicada en medicaldata y compararla con los resultados reportados en el artículo  “A Randomized Comparison Between the Pentax AWSVideo Laryngoscope and the Macintosh Laryngoscope in Morbidly Obese Patients”.  
+El trabajo consiste en realizar una modelación estadística utilizando la base de datos “laryngoscope” publicada en medicaldata y compararla con los resultados reportados en el artículo  “A Randomized Comparison Between the Pentax AWSVideo Laryngoscope and the Macintosh Laryngoscope in Morbidly Obese Patients”. En este estudio se realizó un ensayo clínico aleatorizado en pacientes con un índice de masa corporal entre 30 y 50 kg/m2 que requerian intubación orotraqueal para cirugía electiva. 
+
+El proceso se llevo a cabo de modo que después de la administración de oxígeno y la inducción de la anestesia general, los pacientes fueron asignados al azar a la intubación utilizando ya sea un laringoscopio Macintosh (n = 49) o el Pentax AWS (n = 50). De 105 pacientes aleatorizados, 4 no completar el estudio por cancelación de cirugía o porque el laringoscopista no pudo llegar al quirófano a tiempo, y 2 pacientes del grupo Pentax tuvieron resultados primarios faltantes. Por lo tanto, los datos están disponibles para los 99 pacientes que fueron analizado.
 </div>
 
 # Objetivo
@@ -83,17 +94,21 @@ Determinar si la intubación con el Pentax AWS sería más fácil y rápida que 
 
 ## Instalación y activación de librerías
 
+<div align="justify">
 Versión de RStudio: 4.2.2 
 
 Necesitarás las siguientes liberías instaladas en tu servidor para correr el código a lo largo del documento.
+</div>
 
 ```{r}
-list.of.packages <- c("medicaldata", "janitor","dplyr","ggplot2","cowplot","gmodels","rstatix","psych","RColorBrewer","ggpubr","car","stats", "corrplot", "tidyverse","MVN","DescTools","broom","survival","survminer","vembedr")
+list.of.packages <- c("medicaldata", "janitor","dplyr","ggplot2","cowplot","gmodels","rstatix","psych","RColorBrewer","ggpubr","car","stats", "corrplot", "tidyverse","MVN","DescTools","broom","survival","survminer","vembedr", "kableExtra")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 ```
 
+<div align="justify">
 Activación de liberías
+</div>
 
 ```{r}
 # Bases de datos
@@ -127,12 +142,17 @@ library(corrplot)
 
 # Embebir videos de youtube
 library(vembedr)
+
+#Manejo de tablas
+library(kableExtra)
 ```
 
 
 ## Datos laringoscopia
 
+<div align="justify">
 La base de datos se encuentra dentro del paquete `medicaldata`, la cual puedes obtener al mandarla a llamar con el código debajo:
+</div>
 
 ```{r}
 # Base de datos
@@ -146,7 +166,9 @@ datos <- laryngoscope
 
 ### Renombración de variables
 
+<div align="justify">
 Vamos a asignar un nuevo nombre a cada una de las variables de modo que éstas contengan un nombre práctico y las podamos manejar de forma rápida y fácil a lo largo del código. Utilizaremos la función `rename` donde los pide declarar el "nuevo nombre" = "nombre antiguo".
+</div>
 
 ```{r}
 datos <- rename(datos, Edad = age, Genero = gender,Estado_fisico = asa , IMC = BMI, Mallampati = Mallampati, Grupo = Randomization, Tiempo_primer_intento = attempt1_time, Exito_primer_intento = attempt1_S_F , Tiempo_segundo_intento = attempt2_time, Metodo_segundo_intento = attempt2_assigned_method, Exito_segundo_intento = attempt2_S_F, Tiempo_tercer_intento = attempt3_time, Metodo_tercer_intento = attempt3_assigned_method, Exito_tercer_intento = attempt3_S_F, Num_Intentos = attempts,  Fracasos = failures, Tiempo_total_intubacion = total_intubation_time, Exito_intubacion = intubation_overall_S_F, Sangrado = bleeding, Nivel_dificultad = ease, Dolor_garganta = sore_throat, Vista_glotis = view)
@@ -154,7 +176,9 @@ datos <- rename(datos, Edad = age, Genero = gender,Estado_fisico = asa , IMC = B
 
 ### Tipos de variables
 
+<div align="justify">
 Es importante determinar las variables tipo factores que se utilizarán en el análisis estadístico. En esta parte utilizamos la función `factor()` en la cual indicamos las variables, sus niveles y las etiquetas de los niveles.   
+</div>
 
 ```{r}
 datos$Genero <- factor(datos$Genero, levels = c(0,1), labels = c("Femenino","Masculino"))
@@ -175,26 +199,39 @@ datos$Intentos_factor <- factor(datos$Num_Intentos, levels = c(1,2,3))
 datos$Mallampati_factor <- factor(datos$Mallampati, levels = c(1,2,3,4), labels = c("I","II", "III", "IV"))
 ```
 
+<div align="justify">
 De igual forma creamos variables auxiliares que nos servirán más delante en análisis estadístico, esto basta con mencionar el nombre de la base de datos seguido de un **$** y el nombre de la variable a crear, como lo es el caso de **Intentos_factor** y **Mallampati_factor**.
+</div>
 
 # Métodos
 
 ## Análisis estadístico
 
+<div align="justify">
+El resultado primario es el tiempo total de la intubación que se definió como el tiempo desde el inicio del primer intento de inserción del laringoscopio hasta obtener señal de capnograma, la cual dentro del codigo se referencia como `Tiempo_total_intubacion`. Si un intento con el dispositivo asignado falla, entonces otro intento ó una técnica alterna se utilizó. La intubación usando el método asignado dentro de los 100 segundos independientemente del número de intentos se consideró exitoso. 
+
+Para los pacientes que cambiaron al otro método o cuyas tráqueas fueron intubadas en un tiempo mayor a 100 segundos, la intubación fue censurada y etiquetada como
+un fracaso en el análisis.
+</div>
+
 ### Análisis univariado
 
+<div align="justify">
 Para obtener un panorama general sobre la estructura de la base de datos y el tipo de cada una de las variables podemos utilizar la función `str()`.
-
+</div>
 ```{r, class.output="scroll-100"}
 # Estructura de los datos
 
 str(datos)
 ```
 
+<div align="justify">
 Así sabemos que tenemos una base de datos con información de 99 pacientes y 24 variables, de las cuales 9 son tipo numéricas y 15 categóricas con sus respectivos niveles.
+</div>
 
 ## Estadística descriptiva
 
+<div align="justify">
 A continuación obtenemos la estadística descriptiva para cada una de las variables utilizando la función `describeBy` la cual nos permite agrupar los datos con respecto al grupo de tratamiento.
 
 Esta parte es muy importante ya que es la primera descripción del comportamiento de las variables. Tenemos parámetros tales como:
@@ -207,8 +244,7 @@ Esta parte es muy importante ya que es la primera descripción del comportamient
 + max: máximo
 + skew: sesgo (+) positivo o (-) negativo
 + kurtosis: curtosis (determina el grado de concentración de los valores de una variable alrededor de la zona central de la distribución de frecuencias)[@curtosis]
-
-Nota: Las variables tipo factores son señaladas con un * 
+</div>
 
 ```{r, class.output="scroll-100"}
 # Estadística decriptiva
@@ -227,7 +263,9 @@ descri$Macintosh[,c(2,3,4,5,8,9,11,12)]
 descri$Pentax_AWS[,c(2,3,4,5,8,9,11,12)]
 ```
 
+<div align="justify">
 Otra manera de coseguir estadísticas descriptivas, en donde también se canculan los cuantiles para cada una de las variables, es utilizando la función `summary()`.
+</div>
 
 ```{r, results='hide'}
 # Estadisticas descriptivas 
@@ -247,13 +285,17 @@ datos %>%
   summary()
 ```
 
+<div align="justify">
 Mediana [cuantil1, cuantil3]
 
 Los pacientes en el grupo Macintosh fueron intubados en 26 [22,29] segundos , mientras que en el grupo Pentax AWS fueron intubados en 38 [31,50] segundos. 
+</div>
 
 ## Normalidad univariada
 
+<div align="justify">
 Para evaluar la normalidad de las variables cuantitativas utilizamos la funcion `mvn()` con la cual podemos tanto veficar si una variable sigue una distribución normal, como generar diferentes tipos de gráficos que nos ayudan a visualizar la distribución de las variables.
+</div>
 
 ```{r}
 # test de normalidad univariante
@@ -588,6 +630,38 @@ summary(modelo)
 ```
 
 # Gráficas
+
+# Diccionario
+
+```{r echo=FALSE}
+# Creación de columnas de la tabla
+
+vector1 <- c("Edad","Genero","IMC","Mallampati","Grupo","Tiempo_primer_intento", "Exito_primer_intento", "Tiempo_segundo_intento", "Metodo_segundo_intento", "Exito_segundo_intento", "Tiempo_tercer_intento", "Metodo_tercer_intento", "Exito_tercer_intento", "Num_Intentos", "Fracasos", "Tiempo_total_intubacion","Exito_intubacion", "Sangrado", "Nivel_dificultad", "Dolor_garganta", "Vista_glotis")
+
+vector2 <- c("Edad","Genero","Indice de masa corporal","Escala para predecir la dificultad de intubación traqueal", "A que grupo pertenece el paciente", "Tiempo de intubacion en el primer intento", "Intubación exitosa en el primer intento", "Tiempo de intubacion en el segundo intento", "Segundo intento realizado con el laringoscopio asignado 	", "Exito en el segundo intento", "Tiempo de intubacion en el tercer intento", "Tercer intento realizado con el laringoscopio asignado", "Exito en el tercer intento", "Numero de intentos realizados", "Numero de fracasos", "Tiempo total de intubacion", "Intubacion exitosa", "Presencia de sangrado", "Dificultad en la intubación traqueal", "Severidad en el dolor de garganta", "Visibilidad de la glotis en escala Cormack-lehane")
+
+vector3 <- c("Años"," ", "kg/m2", " ", " ", "Segundos", " ", "Segundos", " ", " ", "Segundos", " ", " ", "Numero de intentos al operar", "Numero de intentos al operar", " ", " "," ", " ", " ", " ")
+
+vector4 <- c(" ", "Femenino,Masculino", " ", "I,II, III, IV", "Pentax AWS. Macintosh hoja #4", " ", "Si, No", " ", " Si, No", "Si, No", " ", "Si, No", "Si, No", " ", " ", " ", "Si, No", "Si, No", "0 = extremadamente facil, 100 = extremadamente dificil", " ", "Grado 1 o 2, Grado 3 o 4")
+
+# Adherencia de vectores
+
+data <- cbind(vector1, vector2, vector3, vector4)
+
+# Matriz
+
+data <- as.matrix(data)
+ 
+# Especificar nombre de las columnas
+colnames(data) = c("Variable","Etiqueta","Unidad","Codificacion")
+
+# Asignación de tabla
+final=as.table(data)
+ 
+
+kbl(final) %>%
+  kable_styling(bootstrap_options = "striped")
+```
 
 # Referencias
 
