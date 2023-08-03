@@ -37,28 +37,37 @@ knitr::opts_chunk$set(
 # Prefacio
 
 <div align="justify">
-Este document fue creado con el propósito de insentivar el uso de software libre estadístico para el desarrollo de ensayos clínicos, para los profesionales en el área de la salud y estadísticos.
-Se asume conocimiento previo de primer nivel de bioestadística.
+
+Este documento es dirigido a personas con previo conocimiento de estadística descriptiva e inferencial, bioestadística y un indiferente nivel de vocabulario médico. Es creado con el propósito de insentivar el uso del software estadístico libre para realizar el análisis de lo ensayos clínicos y apoyar a los profesionales y practicantes en el área de la salud y estadística, los cuales requieren utilizar métodos computacionales para el manejo de datos y la obtención de resultados relevantes.
+
 </div>
 
 # Introducción 
 
 <div align="justify">
-Las intubaciones traqueales difíciles y fallidas se encuentran entre las principales causas de mortalidad y morbilidad relacionadas con la anestesia.[@Tinker] Dado que una buena visión laríngea facilita la intubación traqueal, se han introducido nuevas tecnologías para mejorar la visualización. Los videolaringoscopios suelen utilizar cámaras en miniatura para facilitar la visualización de la laringe. 
+La proporción de pacientes obesos y con obesidad mórbida está aumentando rápidamente en todo el mundo. Las ciencias de la salud han dicho que la intubación traqueal puede ser más difícil en estos pacientes debido al espacio reducido y la limitación orofaríngea, que provoca una visualización inadecuada.[@m]  Las intubaciones traqueales difíciles y fallidas en estos pacientes se encuentran entre las principales causas de mortalidad y morbilidad relacionadas con la anestesia.[@Tinker]
 
- El Pentax AWS (Figura \@ref(fig:figura1)) es un novedoso videolaringoscopio, disponible en Japón desde 2006, diseñado para facilitar la intubación proporcionando una imagen de vídeo de la glotis. Incorpora una cámara de vídeo en miniatura y un monitor LCD integrado alimentado por pilas. A una cuchilla desechable se acopla al sistema de base. La incorporación de una pantalla LCD permite ver la glotis simultáneamente a la inserción del tubo endotraqueal (ETT). En este sentido, se diferencia de otros videolaringoscopios que utilizan monitores externos. El Pentax AWS también difiere en tener un canal lateral que posiciona guía la ETT. Los informes sugieren que el Pentax AWS puede ayudar a intubar, pero los datos aleatorios siguen siendo escasos.[@Ab] El método estándar para realizar laringoscopia ha sido utilizar el laringoscopio Macintosh hoja #4 (Figura \@ref(fig:figura2)). Siendo la principal diferencia no tener una cámara de video integrada.[@Da] 
+Dado que una buena visión laríngea facilita la intubación traqueal, se han introducido nuevas tecnologías para mejorar la visualización. Los videolaringoscopios suelen utilizar cámaras en miniatura para facilitar la visualización de la laringe. 
+
+ El Pentax AWS (Figura \@ref(fig:figura1)) es un novedoso videolaringoscopio, disponible en Japón desde 2006, diseñado para facilitar la intubación proporcionando una imagen de vídeo de la glotis. Incorpora una cámara de vídeo en miniatura y un monitor LCD integrado alimentado por pilas. A una cuchilla desechable se acopla al sistema de base. La incorporación de una pantalla LCD permite ver la glotis simultáneamente a la inserción del tubo endotraqueal (ETT). En este sentido, se diferencia de otros videolaringoscopios que utilizan monitores externos. El Pentax AWS también difiere en tener un canal lateral que posiciona la guía al ETT. Los informes sugieren que este laringocopio puede ayudar a intubar, pero los datos aleatorios siguen siendo escasos.[@Ab] El método estándar para realizar laringoscopia ha sido utilizar el laringoscopio Macintosh estándar con hoja nº4 (Figura \@ref(fig:figura2)). Siendo la principal diferencia no tener una cámara de video integrada.[@Da] 
 </div>
 
 ```{r figura1, echo=FALSE, out.width="20%", fig.cap="Pentax AWS", fig.align = 'center'}
 knitr::include_graphics("C:/Users/bby/OneDrive/Documentos/CIMAT/EstanciasCIMAT2023/ECAs/PracticasR/Laringoscopia_R_Python/Laringoscopia_R_Pyhton/AWS_mit_Tubus.jpg")
 ```
 
-```{r figura2, echo=FALSE, out.width="20%", fig.cap="Macintosh hoja #4", fig.align = 'center'}
+```{r figura2, echo=FALSE, out.width="20%", fig.cap="Macintosh estándar con hoja nº4 ", fig.align = 'center'}
 knitr::include_graphics("C:/Users/bby/OneDrive/Documentos/CIMAT/EstanciasCIMAT2023/ECAs/PracticasR/Laringoscopia_R_Python/Laringoscopia_R_Pyhton/macintosh.jpg")
 ```
 
 <div align="justify">
-En el siguiente video se muestra una representación del procedimiento de intubación de pacientes, realizado con ambos métodos. Apatir del tiempo 6:22 min se encuentra el 
+Se realizó un estudio en pacientes con obesidad mórbida, el cual reporta sus resultados en el artículo  “A Randomized Comparison Between the Pentax AWS Video Laryngoscope and the Macintosh Laryngoscope in Morbidly Obese Patients”. En este estudio se probó la hipótesis de investigación: la intubación con Pentax AWS sería más fácil y rápida que con un laringoscopio Macintosh.
+
+El estudio fue diseñado como un ensayo clínico aleatorizado en pacientes con un índice de masa corporal entre 30 y 50 kg/m2 que requerian intubación orotraqueal para cirugía electiva.[@m] 
+
+El procedimiento comienzó con la administración de oxígeno y la inducción de la anestesia general en los pacientes para después asignarlos al azar a la técnica de intubación, ya sea Macintosh (n = 49) o el Pentax AWS (n = 50). De 105 pacientes aleatorizados, 4 no completaron el estudio por cancelación de cirugía o porque el laringoscopista no pudo llegar al quirófano a tiempo, y 2 pacientes del grupo Pentax tuvieron resultados primarios faltantes. Por lo tanto, los datos están disponibles para los 99 pacientes que fueron analizados.
+
+En el siguiente video se muestra una representación del procedimiento de intubación de pacientes, realizado con ambos métodos. 
 </div>
 
 ```{r echo=FALSE}
@@ -70,25 +79,27 @@ embed_url("https://www.youtube.com/watch?v=3InIsTBbFRU&t=6s")%>%
 ```
 
 <div align="justify">
-De acuerdo con la Organización Mundial de la Salud, una persona presenta obesidad cuando su IMC es ≥ a 30 Kg/m2. La fracción de pacientes obesos y con obesidad mórbida está aumentando rápidamente en todo el mundo. La intubación traqueal puede ser en estos pacientes porque el espacio orofaríngeo limitado puede impedir una visualización adecuada. 
+Una vez finalizado el estudio y recabada la información de los pacientes, se pueden encontrar en la base de datos "Laryngoscope" en la paquetería de medicaldata en el Software Estadístico R.
 
-El trabajo consiste en realizar una modelación estadística utilizando la base de datos “laryngoscope” publicada en medicaldata y compararla con los resultados reportados en el artículo  “A Randomized Comparison Between the Pentax AWSVideo Laryngoscope and the Macintosh Laryngoscope in Morbidly Obese Patients”. En este estudio se realizó un ensayo clínico aleatorizado en pacientes con un índice de masa corporal entre 30 y 50 kg/m2 que requerian intubación orotraqueal para cirugía electiva. 
+Este trabajo consiste en realizar una modelación estadística computacional de los métodos utilizados para la producción del articulo mencionado. Se manejan diferentes tipos de paquetes y funciones predefinidas en R para inferir y concluir sibre los datos. Se muestra paso a paso el manejo del sowftware y la creación de  información visual significativa.
 
-El proceso se llevo a cabo de modo que después de la administración de oxígeno y la inducción de la anestesia general, los pacientes fueron asignados al azar a la intubación utilizando ya sea un laringoscopio Macintosh (n = 49) o el Pentax AWS (n = 50). De 105 pacientes aleatorizados, 4 no completar el estudio por cancelación de cirugía o porque el laringoscopista no pudo llegar al quirófano a tiempo, y 2 pacientes del grupo Pentax tuvieron resultados primarios faltantes. Por lo tanto, los datos están disponibles para los 99 pacientes que fueron analizado.
 </div>
 
 # Objetivo
 
 <div align="justify">
-Desarrollo de análisis estadístico comparando el método de laringoscopia Pentax AWS y el laringoscopio Macintosh en pacientes con obesidad mórbida 
+Desarrollar un análisis estadístico comparando el método Pentax AWS y Macintosh en pacientes con obesidad mórbida.
 </div>
 
 ## Objetivos específicos 
 
 <div align="justify">
-Determinar si la intubación con el Pentax AWS sería más fácil y rápida que con un laringoscopio estándar Macintosh hoja nº 4 en pacientes con obesidad mórbida. 
-</div>
++ Determinar si la intubación con el Pentax AWS sería más fácil y rápida que con el Macintosh en pacientes con obesidad mórbida. 
 
++ Comparar los resultados obtenidos en el presente documento vs el articulo.
+
++ Introducir los métodos estadísticos para el desarollo del análsis utilizando el lenguaje R.
+</div>
 
 # Materiales
 
@@ -147,11 +158,11 @@ library(vembedr)
 library(kableExtra)
 ```
 
-
 ## Datos laringoscopia
 
 <div align="justify">
-La base de datos se encuentra dentro del paquete `medicaldata`, la cual puedes obtener al mandarla a llamar con el código debajo:
+
+Comenzemos viendo la base de datos, para ello necesitamos la libreria `medicaldata`, una vez instalada y activada, podemos llamar a los datos con el código debajo:
 </div>
 
 ```{r}
@@ -162,43 +173,64 @@ data(laryngoscope, package="medicaldata" )
 # Asignación de variable a la base de datos
 
 datos <- laryngoscope
+
+# Adjuntar la base de datos a la sesión de trabajo
+
+attach(datos)
 ```
 
-### Renombración de variables
+### Limpieza de datos
+
+#### Renombración de variables
 
 <div align="justify">
-Vamos a asignar un nuevo nombre a cada una de las variables de modo que éstas contengan un nombre práctico y las podamos manejar de forma rápida y fácil a lo largo del código. Utilizaremos la función `rename` donde los pide declarar el "nuevo nombre" = "nombre antiguo".
+Vamos a asignar un nuevo nombre a cada una de las variables de modo que éstas contengan un nombre práctico y las podamos manejar de forma rápida y fácil a lo largo del código. Utilizaremos la función `rename()` donde se requiere utilizar la siguiente estructura: "nuevo nombre" = "nombre antiguo".
 </div>
 
 ```{r}
 datos <- rename(datos, Edad = age, Genero = gender,Estado_fisico = asa , IMC = BMI, Mallampati = Mallampati, Grupo = Randomization, Tiempo_primer_intento = attempt1_time, Exito_primer_intento = attempt1_S_F , Tiempo_segundo_intento = attempt2_time, Metodo_segundo_intento = attempt2_assigned_method, Exito_segundo_intento = attempt2_S_F, Tiempo_tercer_intento = attempt3_time, Metodo_tercer_intento = attempt3_assigned_method, Exito_tercer_intento = attempt3_S_F, Num_Intentos = attempts,  Fracasos = failures, Tiempo_total_intubacion = total_intubation_time, Exito_intubacion = intubation_overall_S_F, Sangrado = bleeding, Nivel_dificultad = ease, Dolor_garganta = sore_throat, Vista_glotis = view)
 ```
 
-### Tipos de variables
+#### Tipos de variables
 
 <div align="justify">
 Es importante determinar las variables tipo factores que se utilizarán en el análisis estadístico. En esta parte utilizamos la función `factor()` en la cual indicamos las variables, sus niveles y las etiquetas de los niveles.   
 </div>
 
+
 ```{r}
+# Factores principales del estudio
+
 datos$Genero <- factor(datos$Genero, levels = c(0,1), labels = c("Femenino","Masculino"))
-datos$Estado_fisico <- factor(datos$Estado_fisico, levels = c(1,2,3,4), labels = c("I","II","III","IV"))
 datos$Grupo <- factor(datos$Grupo, levels = c(0,1), labels = c("Macintosh","Pentax_AWS"))
 datos$Exito_primer_intento <- factor(datos$Exito_primer_intento, levels = c(0,1), labels = c("No","Si"))
-datos$Metodo_segundo_intento <- factor(datos$Metodo_segundo_intento, levels = c(0,1), labels = c("No","Si"))
+
 datos$Exito_segundo_intento  <- factor(datos$Exito_segundo_intento , levels = c(0,1), labels = c("No","Si"))
-datos$Metodo_tercer_intento <- factor(datos$Metodo_tercer_intento, levels = c(0,1), labels = c("No","Si"))
+
 datos$Exito_tercer_intento <- factor(datos$Exito_tercer_intento, levels = c(0,1), labels = c("No","Si"))
 datos$Fracasos <- factor(datos$Fracasos, levels = c(1,2,3), labels = c("1","2","3"))
 datos$Exito_intubacion <- factor(datos$Exito_intubacion, levels = c(0,1), labels= c("No","Si"))
 datos$Sangrado  <- factor(datos$Sangrado , levels = c(0,1), labels = c("No","Si"))
-#datos$Nivel_dificultad  <- factor(datos$Nivel_dificultad , levels = c(0:100), labels = c(0:100))
+
+# En duda
+
 datos$Dolor_garganta  <- factor(datos$Dolor_garganta , levels = c(0,1,2,3), labels = c("Ninguno","Leve","Moderado","Severo"))
 datos$Vista_glotis  <- factor(datos$Vista_glotis , levels = c(0,1), labels = c("Grado 1 o 2","Grado 3 o 4"))
 datos$Intentos_factor <- factor(datos$Num_Intentos, levels = c(1,2,3))
 datos$Mallampati_factor <- factor(datos$Mallampati, levels = c(1,2,3,4), labels = c("I","II", "III", "IV"))
 ```
 
+```{r}
+# Factores secundarios del estudio
+
+datos$Estado_fisico <- factor(datos$Estado_fisico, levels = c(1,2,3,4), labels = c("I","II","III","IV"))
+
+datos$Metodo_segundo_intento <- factor(datos$Metodo_segundo_intento, levels = c(0,1), labels = c("No","Si"))
+
+datos$Metodo_tercer_intento <- factor(datos$Metodo_tercer_intento, levels = c(0,1), labels = c("No","Si"))
+
+
+```
 <div align="justify">
 De igual forma creamos variables auxiliares que nos servirán más delante en análisis estadístico, esto basta con mencionar el nombre de la base de datos seguido de un **$** y el nombre de la variable a crear, como lo es el caso de **Intentos_factor** y **Mallampati_factor**.
 </div>
@@ -208,10 +240,14 @@ De igual forma creamos variables auxiliares que nos servirán más delante en an
 ## Análisis estadístico
 
 <div align="justify">
-El resultado primario es el tiempo total de la intubación que se definió como el tiempo desde el inicio del primer intento de inserción del laringoscopio hasta obtener señal de capnograma, la cual dentro del codigo se referencia como `Tiempo_total_intubacion`. Si un intento con el dispositivo asignado falla, entonces otro intento ó una técnica alterna se utilizó. La intubación usando el método asignado dentro de los 100 segundos independientemente del número de intentos se consideró exitoso. 
+El resultado primario es el tiempo total de la intubación que se definió como el tiempo desde el inicio del primer intento de inserción del laringoscopio hasta obtener una señal del capnograma. Dentro del código se puede encontrar la variable como `Tiempo_total_intubacion`. Si un intento con el dispositivo asignado falla, entonces otro intento ó una técnica alterna se utiliza. La intubación usando el método asignado dentro de los 100 segundos independientemente del número de intentos se consideró exitoso `Exito_intubacion`. 
 
 Para los pacientes que cambiaron al otro método o cuyas tráqueas fueron intubadas en un tiempo mayor a 100 segundos, la intubación fue censurada y etiquetada como
-un fracaso en el análisis.
+un fracaso en el análisis `Fracasos`.
+
+La vista de la glotis para cada laringoscopia se calificó utilizando el Cormack-Lehane
+sistema de calificación `Vista_glotis`. La facilidad de la intubación traqueal en una escala de Likert (desde 0 = extremadamente fácil a 100 = extremadamente difícil) `Nivel_dificultad`, la presencia de manchas de sangre `Sangrado` y la gravedad
+de cualquier dolor de garganta postoperatorio también se registró durante una visita postoperatoria realizada por observadores que desconocen el método de intubación utilizado `Dolor_garganta`.
 </div>
 
 ### Análisis univariado
