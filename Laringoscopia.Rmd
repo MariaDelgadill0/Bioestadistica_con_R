@@ -63,23 +63,7 @@ knitr::include_graphics("C:/Users/bby/OneDrive/Documentos/CIMAT/EstanciasCIMAT20
 <div align="justify">
 Se realizó un estudio en pacientes con obesidad mórbida, el cual reporta sus resultados en el artículo  “A Randomized Comparison Between the Pentax AWS Video Laryngoscope and the Macintosh Laryngoscope in Morbidly Obese Patients”. En este estudio se probó la hipótesis de investigación: la intubación con Pentax AWS sería más fácil y rápida que con un laringoscopio Macintosh.
 
-El estudio fue diseñado como un ensayo clínico aleatorizado en pacientes con un índice de masa corporal entre 30 y 50 kg/m2 que requerian intubación orotraqueal para cirugía electiva.[@m] 
-
-El procedimiento comienzó con la administración de oxígeno y la inducción de la anestesia general en los pacientes para después asignarlos al azar a la técnica de intubación, ya sea Macintosh (n = 49) o el Pentax AWS (n = 50). De 105 pacientes aleatorizados, 4 no completaron el estudio por cancelación de cirugía o porque el laringoscopista no pudo llegar al quirófano a tiempo, y 2 pacientes del grupo Pentax tuvieron resultados primarios faltantes. Por lo tanto, los datos están disponibles para los 99 pacientes que fueron analizados.
-
-En el siguiente video se muestra una representación del procedimiento de intubación de pacientes, realizado con ambos métodos. 
-</div>
-
-```{r echo=FALSE}
-library(vembedr)
-
-embed_url("https://www.youtube.com/watch?v=3InIsTBbFRU&t=6s")%>%
-  use_align("center")%>%
-  use_start_time("6m22")
-```
-
-<div align="justify">
-Una vez finalizado el estudio y recabada la información de los pacientes, se pueden encontrar en la base de datos "Laryngoscope" en la paquetería de medicaldata en el Software Estadístico R.
+Una vez finalizado el estudio y recabada la información de los pacientes, estos fueron colocados en la base de datos "Laryngoscope" en la paquetería de medicaldata en el Software Estadístico R.
 
 Este trabajo consiste en realizar una modelación estadística computacional de los métodos utilizados para la producción del articulo mencionado. Se manejan diferentes tipos de paquetes y funciones predefinidas en R para inferir y concluir sibre los datos. Se muestra paso a paso el manejo del sowftware y la creación de  información visual significativa.
 
@@ -112,7 +96,7 @@ Necesitarás las siguientes liberías instaladas en tu servidor para correr el c
 </div>
 
 ```{r}
-list.of.packages <- c("medicaldata", "janitor","dplyr","ggplot2","cowplot","gmodels","rstatix","psych","RColorBrewer","ggpubr","car","stats", "corrplot", "tidyverse","MVN","DescTools","broom","survival","survminer","vembedr", "kableExtra")
+list.of.packages <- c("medicaldata", "janitor","dplyr","ggplot2","cowplot","gmodels","rstatix","psych","RColorBrewer","ggpubr","car","stats", "corrplot", "tidyverse","MVN","DescTools","broom","survival","survminer","vembedr", "kableExtra", "gtsummary")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 ```
@@ -150,6 +134,7 @@ library(psych)
 library(RColorBrewer)
 library(ggpubr)
 library(corrplot)
+library(gtsummary)
 
 # Embebir videos de youtube
 library(vembedr)
@@ -188,7 +173,7 @@ Vamos a asignar un nuevo nombre a cada una de las variables de modo que éstas c
 </div>
 
 ```{r}
-datos <- rename(datos, Edad = age, Genero = gender,Estado_fisico = asa , IMC = BMI, Mallampati = Mallampati, Grupo = Randomization, Tiempo_primer_intento = attempt1_time, Exito_primer_intento = attempt1_S_F , Tiempo_segundo_intento = attempt2_time, Metodo_segundo_intento = attempt2_assigned_method, Exito_segundo_intento = attempt2_S_F, Tiempo_tercer_intento = attempt3_time, Metodo_tercer_intento = attempt3_assigned_method, Exito_tercer_intento = attempt3_S_F, Num_Intentos = attempts,  Fracasos = failures, Tiempo_total_intubacion = total_intubation_time, Exito_intubacion = intubation_overall_S_F, Sangrado = bleeding, Nivel_dificultad = ease, Dolor_garganta = sore_throat, Vista_glotis = view)
+datos <- rename(datos, Edad = age, Genero = gender,Estado_fisico = asa , IMC = BMI, Mallampati = Mallampati, Grupo = Randomization, Tiempo_1_intento = attempt1_time, Exito_1_intento = attempt1_S_F , Tiempo_2_intento = attempt2_time, Metodo_2_intento = attempt2_assigned_method, Exito_2_intento = attempt2_S_F, Tiempo_3_intento = attempt3_time, Metodo_3_intento = attempt3_assigned_method, Exito_3_intento = attempt3_S_F, Num_intentos = attempts,  Fracasos = failures, Tiempo_total_intubacion = total_intubation_time, Exito_intubacion = intubation_overall_S_F, Sangrado = bleeding, Nivel_dificultad = ease, Dolor_garganta = sore_throat, Vista_glotis = view)
 ```
 
 #### Tipos de variables
@@ -203,11 +188,11 @@ Es importante determinar las variables tipo factores que se utilizarán en el an
 
 datos$Genero <- factor(datos$Genero, levels = c(0,1), labels = c("Femenino","Masculino"))
 datos$Grupo <- factor(datos$Grupo, levels = c(0,1), labels = c("Macintosh","Pentax_AWS"))
-datos$Exito_primer_intento <- factor(datos$Exito_primer_intento, levels = c(0,1), labels = c("No","Si"))
+datos$Exito_1_intento <- factor(datos$Exito_1_intento, levels = c(0,1), labels = c("No","Si"))
 
-datos$Exito_segundo_intento  <- factor(datos$Exito_segundo_intento , levels = c(0,1), labels = c("No","Si"))
+datos$Exito_2_intento  <- factor(datos$Exito_2_intento , levels = c(0,1), labels = c("No","Si"))
 
-datos$Exito_tercer_intento <- factor(datos$Exito_tercer_intento, levels = c(0,1), labels = c("No","Si"))
+datos$Exito_3_intento <- factor(datos$Exito_3_intento, levels = c(0,1), labels = c("No","Si"))
 datos$Fracasos <- factor(datos$Fracasos, levels = c(1,2,3), labels = c("1","2","3"))
 datos$Exito_intubacion <- factor(datos$Exito_intubacion, levels = c(0,1), labels= c("No","Si"))
 datos$Sangrado  <- factor(datos$Sangrado , levels = c(0,1), labels = c("No","Si"))
@@ -216,8 +201,7 @@ datos$Sangrado  <- factor(datos$Sangrado , levels = c(0,1), labels = c("No","Si"
 
 datos$Dolor_garganta  <- factor(datos$Dolor_garganta , levels = c(0,1,2,3), labels = c("Ninguno","Leve","Moderado","Severo"))
 datos$Vista_glotis  <- factor(datos$Vista_glotis , levels = c(0,1), labels = c("Grado 1 o 2","Grado 3 o 4"))
-datos$Intentos_factor <- factor(datos$Num_Intentos, levels = c(1,2,3))
-datos$Mallampati_factor <- factor(datos$Mallampati, levels = c(1,2,3,4), labels = c("I","II", "III", "IV"))
+
 ```
 
 ```{r}
@@ -225,21 +209,55 @@ datos$Mallampati_factor <- factor(datos$Mallampati, levels = c(1,2,3,4), labels 
 
 datos$Estado_fisico <- factor(datos$Estado_fisico, levels = c(1,2,3,4), labels = c("I","II","III","IV"))
 
-datos$Metodo_segundo_intento <- factor(datos$Metodo_segundo_intento, levels = c(0,1), labels = c("No","Si"))
+datos$Metodo_2_intento <- factor(datos$Metodo_2_intento, levels = c(0,1), labels = c("No","Si"))
 
-datos$Metodo_tercer_intento <- factor(datos$Metodo_tercer_intento, levels = c(0,1), labels = c("No","Si"))
-
-
+datos$Metodo_3_intento <- factor(datos$Metodo_3_intento, levels = c(0,1), labels = c("No","Si"))
 ```
+
 <div align="justify">
-De igual forma creamos variables auxiliares que nos servirán más delante en análisis estadístico, esto basta con mencionar el nombre de la base de datos seguido de un **$** y el nombre de la variable a crear, como lo es el caso de **Intentos_factor** y **Mallampati_factor**.
+En el código debajo se crean dos variables auxiliares `Intentos_factor` y `Mallampati_factor`, basta con mencionar el nombre de la base de datos seguido de un **$** y el nombre de la nueva variable.
+
+```{r}
+# Añadir variables 
+
+datos$Intentos_factor <- factor(datos$Num_intentos, levels = c(1,2,3))
+datos$Mallampati_factor <- factor(datos$Mallampati, levels = c(1,2,3,4), labels = c("I","II", "III", "IV"))
+```
+
+
+que nos servirán más delante en análisis estadístico, esto basta con 
 </div>
 
 # Métodos
 
-## Análisis estadístico
+<div align="justify">
+El estudio fue diseñado como un ensayo clínico aleatorizado en pacientes con un índice de masa corporal entre 30 y 50 kg/m2 que requerian intubación orotraqueal para cirugía electiva.[@m] 
+
+El procedimiento comienzó con la administración de oxígeno y la inducción de la anestesia general en los pacientes para después asignarlos al azar a la técnica de intubación, ya sea Macintosh (n = 49) o el Pentax AWS (n = 50). De 105 pacientes aleatorizados, 4 no completaron el estudio por cancelación de cirugía o porque el laringoscopista no pudo llegar al quirófano a tiempo, y 2 pacientes del grupo Pentax tuvieron resultados primarios faltantes. Por lo tanto, los datos están disponibles para los 99 pacientes que fueron analizados.
+
+En el siguiente video se muestra una representación del procedimiento de intubación de pacientes, realizado con ambos métodos. 
+</div>
+
+```{r echo=FALSE}
+library(vembedr)
+
+embed_url("https://www.youtube.com/watch?v=3InIsTBbFRU&t=6s")%>%
+  use_align("center")%>%
+  use_start_time("6m22")
+```
 
 <div align="justify">
+En todos los casos, la cabeza del paciente se colocó en el posición neutral sobre una almohada de espuma "donut" y el laringoscopista era libre de manipular la cabeza según fuera necesario para obtener la mejor vista posible.
+
+La aleatorización se basó en datos generados por computadora y códigos de bloques aleatorios que fueron mantenidos dentro de sobres opacos enumerados. 
+Todas las tráqueas de los pacientes fueron intubadas por 1 de 2 anestesiólogos asistentes, cada uno de los cuales había utilizado previamente el Pentax AWS de 5 a 10 veces antes de comenzar el estudio. 
+</div>
+
+# Análisis estadístico
+
+<div align="justify">
+Se utilizaron estadísticas descriptivas estándar para comparar los grupos en las variables de referencia. Se evaluó mediante la diferencia estandarizada (es decir, la diferencia en medias o proporciones dividida por la desviación estándar combinada). Cualquier covariable con un estandarizado diferencia de 0,25 en valor absoluto se ajustó en el análisis, a menos que se especifique lo contrario.
+
 El resultado primario es el tiempo total de la intubación que se definió como el tiempo desde el inicio del primer intento de inserción del laringoscopio hasta obtener una señal del capnograma. Dentro del código se puede encontrar la variable como `Tiempo_total_intubacion`. Si un intento con el dispositivo asignado falla, entonces otro intento ó una técnica alterna se utiliza. La intubación usando el método asignado dentro de los 100 segundos independientemente del número de intentos se consideró exitoso `Exito_intubacion`. 
 
 Para los pacientes que cambiaron al otro método o cuyas tráqueas fueron intubadas en un tiempo mayor a 100 segundos, la intubación fue censurada y etiquetada como
@@ -250,11 +268,12 @@ sistema de calificación `Vista_glotis`. La facilidad de la intubación traqueal
 de cualquier dolor de garganta postoperatorio también se registró durante una visita postoperatoria realizada por observadores que desconocen el método de intubación utilizado `Dolor_garganta`.
 </div>
 
-### Análisis univariado
+### Análisis univariado/
 
 <div align="justify">
 Para obtener un panorama general sobre la estructura de la base de datos y el tipo de cada una de las variables podemos utilizar la función `str()`.
 </div>
+
 ```{r, class.output="scroll-100"}
 # Estructura de los datos
 
@@ -263,17 +282,71 @@ str(datos)
 
 <div align="justify">
 Así sabemos que tenemos una base de datos con información de 99 pacientes y 24 variables, de las cuales 9 son tipo numéricas y 15 categóricas con sus respectivos niveles.
-</div>
 
-## Estadística descriptiva
+### Estadística descriptiva {.tabset .tabset-pills}
 
 <div align="justify">
-A continuación obtenemos la estadística descriptiva para cada una de las variables utilizando la función `describeBy` la cual nos permite agrupar los datos con respecto al grupo de tratamiento.
+La función `summary()` calcula los parámetros de cada una de las variables introducidas siempre y cuando éstas sean tipo numéricas, por otro lado, cuando las variables son tipo factor, ésta función devuelve un conteo de las frecuencias por niveles. 
+</div>
 
-Esta parte es muy importante ya que es la primera descripción del comportamiento de las variables. Tenemos parámetros tales como:
+#### Variables numéricas
+
+```{r}
+datos %>%
+  select("Grupo","Tiempo_total_intubacion","Nivel_dificultad","Exito_1_intento", "Exito_intubacion", "Num_intentos", "Vista_glotis", "Sangrado", "Dolor_garganta") %>%
+  tbl_summary(by = Grupo,
+              statistic = list(
+                all_categorical() ~ "{n} ({p}%)")) %>% add_p() %>% add_overall() %>%
+modify_spanning_header(c("stat_1", "stat_2") ~ "**Tratamiento**")
+```
+
+```{r}
+# Grupo Macintosh
+
+macin_estadi <- datos %>%
+  filter(Grupo == "Macintosh") %>%
+  select("Tiempo_1_intento","Tiempo_2_intento","Tiempo_3_intento","Tiempo_total_intubacion","Nivel_dificultad") %>%
+  summary()
+```
+
+```{r echo=FALSE}
+# Convertir en tabla y darle formato
+
+macin_estadi %>%
+  as.table() %>%
+  kbl(caption = "Tabla de estadísticas descriptivas en grupo Macintosh") %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+```
+
+
+```{r}
+# Grupo Pentax AWS
+
+pentax_estadi <- datos %>%
+  filter(Grupo == "Pentax_AWS") %>%
+  select("Tiempo_1_intento","Tiempo_2_intento","Tiempo_3_intento","Tiempo_total_intubacion","Nivel_dificultad") %>%
+  summary()
+
+```
+
+```{r echo=FALSE}
+# Convertir en tabla y darle formato
+
+pentax_estadi %>%
+  as.table() %>%
+  kbl(caption = "Tabla de estadísticas descriptivas en grupo Pentax AWS") %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+```
+
+<div align="justify">
+`r macin_estadi[3,5]` [`r macin_estadi[2,5]`, `r macin_estadi[5,5]`]
+
+Los pacientes en el grupo Macintosh fueron intubados en 26 [22,29] segundos , mientras que en el grupo Pentax AWS fueron intubados en 38 [31,50] segundos. 
+
+Una alternativa para obtener las estadísticas descriptivas de las variables numéricas, es la función `describeBy()`, dentro de la cual se puede indicar que se desea realizar la agrupación por tratamiento y ésta devuelve los cálculos de los siguientes parámetros:
 
 + n: tamaño de muestra
-+ mean: Media muestral
++ mean: media muestral
 + sd: desviación estándar
 + median: mediana
 + min: mínimo
@@ -283,49 +356,43 @@ Esta parte es muy importante ya que es la primera descripción del comportamient
 </div>
 
 ```{r, class.output="scroll-100"}
-# Estadística decriptiva
+# Estadística decriptiva utilizando función describeBy
 
-descri <- describeBy(datos, group = datos$Grupo)
+descri <- describeBy(datos[,c(7, 9, 12, 17, 20)], group = datos$Grupo)
 
-# Estadística descriptiva para grupo Macintosh
+# Grupo Macintosh
 
 descri$Macintosh[,c(2,3,4,5,8,9,11,12)]
 ```
 
-
-```{r, class.output="scroll-100"}
-# Estadística descriptiva para grupo Pentax_AWS
-
-descri$Pentax_AWS[,c(2,3,4,5,8,9,11,12)]
-```
-
 <div align="justify">
-Otra manera de coseguir estadísticas descriptivas, en donde también se canculan los cuantiles para cada una de las variables, es utilizando la función `summary()`.
+En el grupo Macintosh no hubo ningun tercer intento de intubación.
 </div>
 
-```{r, results='hide'}
+```{r, class.output="scroll-100"}
+# Grupo Pentax_AWS
+
+descri$Pentax_AWS[,c(2,3,4,5,8,9,11,12)]
+
+```
+
+#### Variables tipo factor
+
+```{r }
 # Estadisticas descriptivas 
 
 # Grupo Macintosh
 
-datos %>%
+datos[,c(6, 16, 18, 19, 21, 22)] %>%
   filter(Grupo == "Macintosh") %>%
-  select(Tiempo_total_intubacion) %>%
   summary()
 
 # Grupo Pentax AWS
 
-datos %>%
+datos[,c(6, 16, 18, 19, 21, 22)] %>%
   filter(Grupo == "Pentax_AWS") %>%
-  select(Tiempo_total_intubacion) %>%
   summary()
 ```
-
-<div align="justify">
-Mediana [cuantil1, cuantil3]
-
-Los pacientes en el grupo Macintosh fueron intubados en 26 [22,29] segundos , mientras que en el grupo Pentax AWS fueron intubados en 38 [31,50] segundos. 
-</div>
 
 ## Normalidad univariada
 
@@ -376,19 +443,19 @@ Primero crearemos dos subgrupos, uno para cada grupo de tratamiento los cuales c
 
 prueba_Macintosh <- datos %>%
                   filter(datos$Grupo == "Macintosh") %>%
-                  select(Num_Intentos, Tiempo_total_intubacion, Nivel_dificultad, Mallampati, Sangrado, Dolor_garganta)
+                  select(Num_intentos, Tiempo_total_intubacion, Nivel_dificultad, Mallampati, Sangrado, Dolor_garganta)
 
 # Subgrupo de variables para el grupo Pentax_AWS
 
 prueba_Pentax <- datos %>%
                filter(datos$Grupo == "Pentax_AWS") %>%
-               select(Num_Intentos, Tiempo_total_intubacion, Nivel_dificultad, Mallampati, Sangrado, Dolor_garganta)
+               select(Num_intentos, Tiempo_total_intubacion, Nivel_dificultad, Mallampati, Sangrado, Dolor_garganta)
 ```
 
 ```{r}
 # Prueba de suma de rangos de Wilcoxon para el número de intentos de intubación
 
-wilcox.test(prueba_Macintosh$Num_Intentos , prueba_Pentax$Num_Intentos)
+wilcox.test(prueba_Macintosh$Num_intentos , prueba_Pentax$Num_intentos)
 ```
 <div align="justify">
 La prueba arroja un valor p > α=0.05, por lo cual no se puede rechazar $H_0$, es decir, que no existe una diferencia estadísticamente significativa entre la mediana del número de intentos de intubación  del grupo Macintosh y Pentax AWS.
@@ -494,7 +561,7 @@ Hipótesis alternativa ($H_1$): Existe asociación entre las dos variables categ
 
 # Tratamiento vs éxito de intubación en el primer intento
 
-t1 <- table(datos$Grupo, datos$Exito_primer_intento)
+t1 <- table(datos$Grupo, datos$Exito_1_intento)
 
 # Tratamiento vs éxito de intubación en general
 
@@ -558,13 +625,13 @@ fisher.test(t5)
 
 Exito_1int_Macintosh <- datos %>%
                   filter(datos$Grupo == "Macintosh") %>%
-                  select(Exito_primer_intento)
+                  select(Exito_1_intento)
 
 # Éxito de intubación en el primer intento en grupo Pentax_AWS
 
 Exito_1int_Pentax_AWS <- datos %>%
                filter(datos$Grupo == "Pentax_AWS") %>%
-               select(Exito_primer_intento)
+               select(Exito_1_intento)
 
 ```
 
@@ -575,13 +642,13 @@ Exito_1int_Pentax_AWS <- datos %>%
 # Conteo en grupo Macintosh
 
 Exito_1int_Macintosh %>%  
-  tabyl(Exito_primer_intento) %>% 
+  tabyl(Exito_1_intento) %>% 
   adorn_totals("row")
 
 # Conteo en grupo Pentax_AWS
 
 Exito_1int_Pentax_AWS %>%  
-  tabyl(Exito_primer_intento) %>% 
+  tabyl(Exito_1_intento) %>% 
   adorn_totals("row")
 ```
 
@@ -672,7 +739,7 @@ summary(modelo)
 ```{r echo=FALSE}
 # Creación de columnas de la tabla
 
-vector1 <- c("Edad","Genero","IMC","Mallampati","Grupo","Tiempo_primer_intento", "Exito_primer_intento", "Tiempo_segundo_intento", "Metodo_segundo_intento", "Exito_segundo_intento", "Tiempo_tercer_intento", "Metodo_tercer_intento", "Exito_tercer_intento", "Num_Intentos", "Fracasos", "Tiempo_total_intubacion","Exito_intubacion", "Sangrado", "Nivel_dificultad", "Dolor_garganta", "Vista_glotis")
+vector1 <- c("Edad","Genero","IMC","Mallampati","Grupo","Tiempo_1_intento", "Exito_1_intento", "Tiempo_2_intento", "Metodo_2_intento", "Exito_2_intento", "Tiempo_3_intento", "Metodo_3_intento", "Exito_3_intento", "Num_intentos", "Fracasos", "Tiempo_total_intubacion","Exito_intubacion", "Sangrado", "Nivel_dificultad", "Dolor_garganta", "Vista_glotis")
 
 vector2 <- c("Edad","Genero","Indice de masa corporal","Escala para predecir la dificultad de intubación traqueal", "A que grupo pertenece el paciente", "Tiempo de intubacion en el primer intento", "Intubación exitosa en el primer intento", "Tiempo de intubacion en el segundo intento", "Segundo intento realizado con el laringoscopio asignado 	", "Exito en el segundo intento", "Tiempo de intubacion en el tercer intento", "Tercer intento realizado con el laringoscopio asignado", "Exito en el tercer intento", "Numero de intentos realizados", "Numero de fracasos", "Tiempo total de intubacion", "Intubacion exitosa", "Presencia de sangrado", "Dificultad en la intubación traqueal", "Severidad en el dolor de garganta", "Visibilidad de la glotis en escala Cormack-lehane")
 
