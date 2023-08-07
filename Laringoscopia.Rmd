@@ -1,5 +1,6 @@
 ---
 title: "Comparación estadística entre el video-laringoscopio Pentax AWS y el laringoscopio Macintosh en pacientes con obesidad mórbida"
+date: "Última actualización Agosto 2023"
 author: Humberto Martínez Bautista, Ricardo A. Rodriguez Ojeda y María de Lourdes
   Delgadillo Hurtado
 output:
@@ -12,7 +13,7 @@ output:
       toc_depth: 2
     theme: journal
     highlight: pygments
-    
+  bookdown::pdf_document2: default
 bibliography: Referencias.bib
 csl: vancouver.csl
 ---
@@ -34,11 +35,11 @@ knitr::opts_chunk$set(
 }
 ```
 
-# Prefacio
+# Acerca de
 
 <div align="justify">
 
-Este documento es dirigido a personas con previo conocimiento de estadística descriptiva e inferencial, bioestadística y un indiferente nivel de vocabulario médico. Es creado con el propósito de insentivar el uso del software estadístico libre para realizar el análisis de lo ensayos clínicos y apoyar a los profesionales y practicantes en el área de la salud y estadística, los cuales requieren utilizar métodos computacionales para el manejo de datos y la obtención de resultados relevantes.
+Este documento es dirigido a personas con previo conocimiento de estadística descriptiva e inferencial, bioestadística y un indiferente nivel de vocabulario médico. Es creado con el propósito de insentivar el uso del software estadístico libre para realizar el análisis dentro de lo ensayos clínicos y apoyar a los profesionales y practicantes en el área de la salud y estadística, a utilizar métodos computacionales para el manejo de datos y la obtención de resultados relevantes.
 
 </div>
 
@@ -47,7 +48,7 @@ Este documento es dirigido a personas con previo conocimiento de estadística de
 <div align="justify">
 La proporción de pacientes obesos y con obesidad mórbida está aumentando rápidamente en todo el mundo. Las ciencias de la salud han dicho que la intubación traqueal puede ser más difícil en estos pacientes debido al espacio reducido y la limitación orofaríngea, que provoca una visualización inadecuada.[@m]  Las intubaciones traqueales difíciles y fallidas en estos pacientes se encuentran entre las principales causas de mortalidad y morbilidad relacionadas con la anestesia.[@Tinker]
 
-Dado que una buena visión laríngea facilita la intubación traqueal, se han introducido nuevas tecnologías para mejorar la visualización. Los videolaringoscopios suelen utilizar cámaras en miniatura para facilitar la visualización de la laringe. 
+Los especialistas en el área de la salud saben que una buena visión laríngea facilita la intubación traqueal, se han introducido nuevas tecnologías para mejorar la visualización. Los videolaringoscopios suelen utilizar cámaras en miniatura para facilitar la visualización de la laringe. 
 
  El Pentax AWS (Figura \@ref(fig:figura1)) es un novedoso videolaringoscopio, disponible en Japón desde 2006, diseñado para facilitar la intubación proporcionando una imagen de vídeo de la glotis. Incorpora una cámara de vídeo en miniatura y un monitor LCD integrado alimentado por pilas. A una cuchilla desechable se acopla al sistema de base. La incorporación de una pantalla LCD permite ver la glotis simultáneamente a la inserción del tubo endotraqueal (ETT). En este sentido, se diferencia de otros videolaringoscopios que utilizan monitores externos. El Pentax AWS también difiere en tener un canal lateral que posiciona la guía al ETT. Los informes sugieren que este laringocopio puede ayudar a intubar, pero los datos aleatorios siguen siendo escasos.[@Ab] El método estándar para realizar laringoscopia ha sido utilizar el laringoscopio Macintosh estándar con hoja nº4 (Figura \@ref(fig:figura2)). Siendo la principal diferencia no tener una cámara de video integrada.[@Da] 
 </div>
@@ -63,9 +64,9 @@ knitr::include_graphics("C:/Users/bby/OneDrive/Documentos/CIMAT/EstanciasCIMAT20
 <div align="justify">
 Se realizó un estudio en pacientes con obesidad mórbida, el cual reporta sus resultados en el artículo  “A Randomized Comparison Between the Pentax AWS Video Laryngoscope and the Macintosh Laryngoscope in Morbidly Obese Patients”. En este estudio se probó la hipótesis de investigación: la intubación con Pentax AWS sería más fácil y rápida que con un laringoscopio Macintosh.
 
-Una vez finalizado el estudio y recabada la información de los pacientes, estos fueron colocados en la base de datos "Laryngoscope" en la paquetería de medicaldata en el Software Estadístico R.
+Una vez finalizado el estudio y recabada la información de los pacientes, estos fueron colocados en la base de datos "Laryngoscope" en la paquetería de medicaldata en el software estadístico computacional R, con el cual fueron obtenidos los resultados del estudio.
 
-Este trabajo consiste en realizar una modelación estadística computacional de los métodos utilizados para la producción del articulo mencionado. Se manejan diferentes tipos de paquetes y funciones predefinidas en R para inferir y concluir sibre los datos. Se muestra paso a paso el manejo del sowftware y la creación de  información visual significativa.
+Este trabajo consiste en realizar una modelación estadística de los métodos utilizados en el artículo para la producción del análisis. Se manejan diferentes tipos de paquetes y funciones predefinidas en R para inferir y concluir sobre los datos. Se muestra paso a paso la aplicación de la estadística y el manejo del sowftware.
 
 </div>
 
@@ -82,7 +83,7 @@ Desarrollar un análisis estadístico comparando el método Pentax AWS y Macinto
 
 + Comparar los resultados obtenidos en el presente documento vs el articulo.
 
-+ Introducir los métodos estadísticos para el desarollo del análsis utilizando el lenguaje R.
++ Utilizar métodos estadísticos computacionales para el desarrollo del análisis por medio de lenguaje R.
 </div>
 
 # Materiales
@@ -158,10 +159,6 @@ data(laryngoscope, package="medicaldata" )
 # Asignación de variable a la base de datos
 
 datos <- laryngoscope
-
-# Adjuntar la base de datos a la sesión de trabajo
-
-attach(datos)
 ```
 
 ### Limpieza de datos
@@ -169,7 +166,7 @@ attach(datos)
 #### Renombración de variables
 
 <div align="justify">
-Vamos a asignar un nuevo nombre a cada una de las variables de modo que éstas contengan un nombre práctico y las podamos manejar de forma rápida y fácil a lo largo del código. Utilizaremos la función `rename()` donde se requiere utilizar la siguiente estructura: "nuevo nombre" = "nombre antiguo".
+ASignar un nuevo nombre a las variables ayuda a identificarlas de manera más ráída y fácil dentro del código. En este caso vamos a asignar un nuevo nombre a cada una de las variables de modo que éstas contengan un nombre en español y con una abreviación adecuada. Utilizaremos la función `rename()` donde se requiere utilizar la siguiente estructura: "nuevo nombre" = "nombre antiguo".
 </div>
 
 ```{r}
@@ -179,33 +176,32 @@ datos <- rename(datos, Edad = age, Genero = gender,Estado_fisico = asa , IMC = B
 #### Tipos de variables
 
 <div align="justify">
-Es importante determinar las variables tipo factores que se utilizarán en el análisis estadístico. En esta parte utilizamos la función `factor()` en la cual indicamos las variables, sus niveles y las etiquetas de los niveles.   
+Es importante determinar las variables tipo factores que se utilizarán en el análisis estadístico. En esta parte utilizamos la función `factor()` en la cual indicamos las variables que serán declaradas como factores, sus niveles y las etiquetas de los niveles.   
 </div>
 
 
 ```{r}
-# Factores principales del estudio
+# Factores del estudio
 
 datos$Genero <- factor(datos$Genero, levels = c(0,1), labels = c("Femenino","Masculino"))
+
 datos$Grupo <- factor(datos$Grupo, levels = c(0,1), labels = c("Macintosh","Pentax_AWS"))
+
 datos$Exito_1_intento <- factor(datos$Exito_1_intento, levels = c(0,1), labels = c("No","Si"))
 
 datos$Exito_2_intento  <- factor(datos$Exito_2_intento , levels = c(0,1), labels = c("No","Si"))
 
 datos$Exito_3_intento <- factor(datos$Exito_3_intento, levels = c(0,1), labels = c("No","Si"))
+
 datos$Fracasos <- factor(datos$Fracasos, levels = c(1,2,3), labels = c("1","2","3"))
+
 datos$Exito_intubacion <- factor(datos$Exito_intubacion, levels = c(0,1), labels= c("No","Si"))
+
 datos$Sangrado  <- factor(datos$Sangrado , levels = c(0,1), labels = c("No","Si"))
 
-# En duda
-
 datos$Dolor_garganta  <- factor(datos$Dolor_garganta , levels = c(0,1,2,3), labels = c("Ninguno","Leve","Moderado","Severo"))
+
 datos$Vista_glotis  <- factor(datos$Vista_glotis , levels = c(0,1), labels = c("Grado 1 o 2","Grado 3 o 4"))
-
-```
-
-```{r}
-# Factores secundarios del estudio
 
 datos$Estado_fisico <- factor(datos$Estado_fisico, levels = c(1,2,3,4), labels = c("I","II","III","IV"))
 
@@ -215,7 +211,8 @@ datos$Metodo_3_intento <- factor(datos$Metodo_3_intento, levels = c(0,1), labels
 ```
 
 <div align="justify">
-En el código debajo se crean dos variables auxiliares `Intentos_factor` y `Mallampati_factor`, basta con mencionar el nombre de la base de datos seguido de un **$** y el nombre de la nueva variable.
+En el código debajo se crean dos variables auxiliares `Intentos_factor` y `Mallampati_factor`. Éstas se pueden crear con solo mencionar el nombre de la base de datos seguido de un **$** y el nombre de la nueva variable.
+</div>
 
 ```{r}
 # Añadir variables 
@@ -224,9 +221,16 @@ datos$Intentos_factor <- factor(datos$Num_intentos, levels = c(1,2,3))
 datos$Mallampati_factor <- factor(datos$Mallampati, levels = c(1,2,3,4), labels = c("I","II", "III", "IV"))
 ```
 
-
-que nos servirán más delante en análisis estadístico, esto basta con 
+<div align="justify">
+Una vez que tenemos la base de datos con las variables arregladas, entonces utilizamos la función `attach()` para poder maneras la variables a lo largo del código sin la necesidad de utilizar métodos.
 </div>
+
+```{r}
+# Adjuntar la base de datos a la sesión de trabajo
+
+attach(datos)
+```
+
 
 # Métodos
 
@@ -249,7 +253,7 @@ embed_url("https://www.youtube.com/watch?v=3InIsTBbFRU&t=6s")%>%
 <div align="justify">
 En todos los casos, la cabeza del paciente se colocó en el posición neutral sobre una almohada de espuma "donut" y el laringoscopista era libre de manipular la cabeza según fuera necesario para obtener la mejor vista posible.
 
-La aleatorización se basó en datos generados por computadora y códigos de bloques aleatorios que fueron mantenidos dentro de sobres opacos enumerados. 
+La aleatorización se basó en datos generados por computadora y códigos de bloques aleatorios que fueron mantenidos dentro de sobres enumerados. 
 Todas las tráqueas de los pacientes fueron intubadas por 1 de 2 anestesiólogos asistentes, cada uno de los cuales había utilizado previamente el Pentax AWS de 5 a 10 veces antes de comenzar el estudio. 
 </div>
 
@@ -258,17 +262,16 @@ Todas las tráqueas de los pacientes fueron intubadas por 1 de 2 anestesiólogos
 <div align="justify">
 Se utilizaron estadísticas descriptivas estándar para comparar los grupos en las variables de referencia. Se evaluó mediante la diferencia estandarizada (es decir, la diferencia en medias o proporciones dividida por la desviación estándar combinada). Cualquier covariable con un estandarizado diferencia de 0,25 en valor absoluto se ajustó en el análisis, a menos que se especifique lo contrario.
 
-El resultado primario es el tiempo total de la intubación que se definió como el tiempo desde el inicio del primer intento de inserción del laringoscopio hasta obtener una señal del capnograma. Dentro del código se puede encontrar la variable como `Tiempo_total_intubacion`. Si un intento con el dispositivo asignado falla, entonces otro intento ó una técnica alterna se utiliza. La intubación usando el método asignado dentro de los 100 segundos independientemente del número de intentos se consideró exitoso `Exito_intubacion`. 
+El resultado primario fue el **tiempo total de la intubación** que se definió como el tiempo desde el inicio del primer intento de inserción del laringoscopio hasta obtener una señal del capnograma. Dentro del código se puede encontrar la variable como `Tiempo_total_intubacion`. Si un intento con el dispositivo asignado falla, entonces otro intento ó una técnica alterna se utiliza `Metodo_2_intento` y `Metodo_3_intento`. La intubación usando el método asignado dentro de los 100 segundos independientemente del número de intentos se consideró exitoso `Exito_intubacion`. 
 
 Para los pacientes que cambiaron al otro método o cuyas tráqueas fueron intubadas en un tiempo mayor a 100 segundos, la intubación fue censurada y etiquetada como
-un fracaso en el análisis `Fracasos`.
+un fracaso `Fracasos`.
 
-La vista de la glotis para cada laringoscopia se calificó utilizando el Cormack-Lehane
-sistema de calificación `Vista_glotis`. La facilidad de la intubación traqueal en una escala de Likert (desde 0 = extremadamente fácil a 100 = extremadamente difícil) `Nivel_dificultad`, la presencia de manchas de sangre `Sangrado` y la gravedad
-de cualquier dolor de garganta postoperatorio también se registró durante una visita postoperatoria realizada por observadores que desconocen el método de intubación utilizado `Dolor_garganta`.
+La vista de la glotis para cada laringoscopia se calificó utilizando el sistema de calificación Cormack-Lehane `Vista_glotis`. La facilidad de la intubación traqueal se registró en una escala de Likert (desde 0 = extremadamente fácil a 100 = extremadamente difícil) `Nivel_dificultad`, la presencia de manchas de sangre `Sangrado` y la gravedad
+de cualquier dolor de garganta postoperatorio `Dolor_garganta`.
 </div>
 
-### Análisis univariado/
+### Análisis univariado
 
 <div align="justify">
 Para obtener un panorama general sobre la estructura de la base de datos y el tipo de cada una de las variables podemos utilizar la función `str()`.
@@ -281,135 +284,136 @@ str(datos)
 ```
 
 <div align="justify">
-Así sabemos que tenemos una base de datos con información de 99 pacientes y 24 variables, de las cuales 9 son tipo numéricas y 15 categóricas con sus respectivos niveles.
+Así se sabe que tenemos una base de datos con información de 99 pacientes y 24 variables, de las cuales 9 son tipo numéricas y 15 categóricas con sus respectivos niveles.
 
-### Estadística descriptiva {.tabset .tabset-pills}
-
-<div align="justify">
-La función `summary()` calcula los parámetros de cada una de las variables introducidas siempre y cuando éstas sean tipo numéricas, por otro lado, cuando las variables son tipo factor, ésta función devuelve un conteo de las frecuencias por niveles. 
+Nota: los niveles de las variables que fueron declaradas como factores serán cambiados a números en orden creciente (ej. "Ninguno" = 1, "Leve" = 2, "Moderado" = 3, "Severo" = 4).
 </div>
 
-#### Variables numéricas
-
-```{r}
-datos %>%
-  select("Grupo","Tiempo_total_intubacion","Nivel_dificultad","Exito_1_intento", "Exito_intubacion", "Num_intentos", "Vista_glotis", "Sangrado", "Dolor_garganta") %>%
-  tbl_summary(by = Grupo,
-              statistic = list(
-                all_categorical() ~ "{n} ({p}%)")) %>% add_p() %>% add_overall() %>%
-modify_spanning_header(c("stat_1", "stat_2") ~ "**Tratamiento**")
-```
-
-```{r}
-# Grupo Macintosh
-
-macin_estadi <- datos %>%
-  filter(Grupo == "Macintosh") %>%
-  select("Tiempo_1_intento","Tiempo_2_intento","Tiempo_3_intento","Tiempo_total_intubacion","Nivel_dificultad") %>%
-  summary()
-```
-
-```{r echo=FALSE}
-# Convertir en tabla y darle formato
-
-macin_estadi %>%
-  as.table() %>%
-  kbl(caption = "Tabla de estadísticas descriptivas en grupo Macintosh") %>%
-  kable_styling(bootstrap_options = "striped", full_width = FALSE)
-```
-
-
-```{r}
-# Grupo Pentax AWS
-
-pentax_estadi <- datos %>%
-  filter(Grupo == "Pentax_AWS") %>%
-  select("Tiempo_1_intento","Tiempo_2_intento","Tiempo_3_intento","Tiempo_total_intubacion","Nivel_dificultad") %>%
-  summary()
-
-```
-
-```{r echo=FALSE}
-# Convertir en tabla y darle formato
-
-pentax_estadi %>%
-  as.table() %>%
-  kbl(caption = "Tabla de estadísticas descriptivas en grupo Pentax AWS") %>%
-  kable_styling(bootstrap_options = "striped", full_width = FALSE)
-```
+### Estadística descriptiva 
 
 <div align="justify">
-`r macin_estadi[3,5]` [`r macin_estadi[2,5]`, `r macin_estadi[5,5]`]
-
-Los pacientes en el grupo Macintosh fueron intubados en 26 [22,29] segundos , mientras que en el grupo Pentax AWS fueron intubados en 38 [31,50] segundos. 
-
-Una alternativa para obtener las estadísticas descriptivas de las variables numéricas, es la función `describeBy()`, dentro de la cual se puede indicar que se desea realizar la agrupación por tratamiento y ésta devuelve los cálculos de los siguientes parámetros:
-
-+ n: tamaño de muestra
-+ mean: media muestral
-+ sd: desviación estándar
-+ median: mediana
-+ min: mínimo
-+ max: máximo
-+ skew: sesgo (+) positivo o (-) negativo
-+ kurtosis: curtosis (determina el grado de concentración de los valores de una variable alrededor de la zona central de la distribución de frecuencias)[@curtosis]
+La función `tbl_summary()` calcula estadísticas descriptivas para variables continuas, categóricas y dicotómicas en R, y presenta los resultados en una tabla de resumen personalizable lista para su publicación. [@gtsummary]
 </div>
 
-```{r, class.output="scroll-100"}
-# Estadística decriptiva utilizando función describeBy
+```{r tabla1}
+# Estadísitica descriptiva
 
-descri <- describeBy(datos[,c(7, 9, 12, 17, 20)], group = datos$Grupo)
-
-# Grupo Macintosh
-
-descri$Macintosh[,c(2,3,4,5,8,9,11,12)]
+tabla1 <- datos %>%
+  
+          # Selección de las variables 
+  
+          select("Grupo","Tiempo_total_intubacion", "Nivel_dificultad","Exito_1_intento", 
+                 "Exito_intubacion", "Num_intentos","Vista_glotis", "Sangrado", 
+                 "Dolor_garganta") %>%
+  
+          # Aplicación de función tbl_summary
+  
+          tbl_summary(by = Grupo,                                   # Agrupación por tratamiento
+                      missing = "no",                               # No incluir valores NA
+                      statistic = list(all_categorical() ~ "{n} ({p}%)")) %>% # Calulo de las estadísticas
+          
+          # Cálculo de valor p
+  
+          add_p() %>%   
+  
+          # Mostrar los nombres de las etiquetas de los niveles en cursiva
+  
+          italicize_levels() %>%                                    
+          
+          # Cambio de emcabezado arriba de las columnas de los grupos
+  
+          modify_spanning_header(c("stat_1", "stat_2") ~ "**Tratamiento**") %>%
+          
+          # Cambio de nombre de la columna de las variables 
+  
+          modify_header(label = "**Variable respuesta**") %>% 
+  
+          # Titulo de la tabla
+  
+          modify_caption("**Relación entre el tratamiento (Pentax vs Macintosh) y las variables respuesta.**") %>% 
+          
+          # Etiquetas de columnas y renglones en negritas
+  
+          bold_labels()
+  
+tabla1    
 ```
 
-<div align="justify">
-En el grupo Macintosh no hubo ningun tercer intento de intubación.
-</div>
+Tabla \@ref(tab:tabla1)
 
-```{r, class.output="scroll-100"}
-# Grupo Pentax_AWS
-
-descri$Pentax_AWS[,c(2,3,4,5,8,9,11,12)]
-
-```
-
-#### Variables tipo factor
 
 ```{r }
-# Estadisticas descriptivas 
+plus_minus_expr <- "\u00B1"
 
-# Grupo Macintosh
-
-datos[,c(6, 16, 18, 19, 21, 22)] %>%
-  filter(Grupo == "Macintosh") %>%
-  summary()
-
-# Grupo Pentax AWS
-
-datos[,c(6, 16, 18, 19, 21, 22)] %>%
-  filter(Grupo == "Pentax_AWS") %>%
-  summary()
+tabla2 <- datos %>%
+  
+          select("Grupo", "Edad", "Genero", "IMC", 
+                 "Estado_fisico", "Mallampati_factor") %>%
+  
+          tbl_summary(by = Grupo,                                   
+                      missing = "no",                               
+                      statistic = list(c("Edad", "IMC", ) ~ "{mean} ({sd})",
+                                       c("Estado_fisico", "Mallampati_factor", "Genero", "Grupo")~ "{n} ({p}%)")) %>%  
+  
+          add_difference(test = list(all_continuous() ~ "t.test")) %>%
+  
+          italicize_levels() %>%                                    
+          
+          modify_spanning_header(c("stat_1", "stat_2") ~ "**Tratamiento**") %>%
+          
+          modify_header(label = "**Variable respuesta**") %>% 
+  
+          modify_caption("**Evaluacion de demografía y vias respiratorias.**") %>% 
+          
+          bold_labels() 
+  
+tabla2    
 ```
 
 ## Normalidad univariada
 
 <div align="justify">
-Para evaluar la normalidad de las variables cuantitativas utilizamos la funcion `mvn()` con la cual podemos tanto veficar si una variable sigue una distribución normal, como generar diferentes tipos de gráficos que nos ayudan a visualizar la distribución de las variables.
+Para evaluar la normalidad de las variables cuantitativas se puede utilizar la función `mvn()` que puede aplicar varias pruebas, en este caso la prueba de **Shapiro Wilks**. 
+
+Si el valor p es menor al nivel de significancia predefinido, se rechaza la hipótesis nula ($H_0$: Los datos se distribuyen de forma normal). 
 </div>
 
 ```{r}
-# test de normalidad univariante
-# Test de Shapiro-Wilks
 
-m1 <- mvn(datos[,c(1,4,7,9,12)] , univariatePlot = "histogram" , univariateTest = "SW", desc = FALSE)
-m1$univariateNormality
-
-m2 <- mvn(datos[,c(15,17,20)] , univariatePlot = "histogram" , univariateTest = "SW", desc = FALSE)
-m2$univariateNormality
+normalidad <- mvn(datos[,c(15,17,20)], univariateTest = "SW", desc = FALSE)
+normalidad$univariateNormality
 ```
+Los histogramas podemos crearlos usando la paquetería `ggplot()`, la cual cuenta con diferentes métodos 
+
+```{r}
+# Histogramas de las variables respuesta cuantitativas
+
+h1 <- ggplot(datos, aes(x = Tiempo_total_intubacion)) +       #
+      geom_histogram(aes(y = ..density..),
+                 colour = 1, fill = "white") +
+      geom_density(col=2, lwd=1) +
+      facet_wrap(~ Grupo)
+      
+h2 <- ggplot(datos, aes(x = Num_intentos)) + 
+      geom_histogram(aes(y = ..density..),
+                 colour = 1, fill = "white") +
+      geom_density(col=2, lwd=1) +
+      facet_wrap(~ Grupo)
+      
+h3 <- ggplot(datos, aes(x = Nivel_dificultad)) + 
+      geom_histogram(aes(y = ..density..),
+                 colour = 1, fill = "white") +
+      geom_density(col=2, lwd=1) +
+      facet_wrap(~ Grupo)
+```
+
+```{r}
+ggarrange(h1, h2, h3,  labels = c("A","B","C"),
+          heights = c(10, 10, 10), widths = c(3, 3, 3),
+        
+          ncol = 1, nrow = 1)
+```
+
 
 ## Análisis bivariado
 
@@ -417,13 +421,7 @@ m2$univariateNormality
 
 <div align="justify">
 
-Utilizaremos la prueba de suma de rangos de wilcoxon como una alternativa a la prueba t de Student, dado que la distribución que siguen las variables sobre las cuales se realizarán las comparaciones no es distribución normal. 
-
-"La prueba de la U de Mann-Whitney, también denominada prueba de la suma de rangos de Wilcoxon, es una prueba no paramétrica que permite comparar las medianas de una variable cuantitativa para las dos categorías de una variable cualitativa dicotómica. Se aplica cuando no se pueden asumir los supuestos necesarios para utilizar la prueba de la t de Student" [@Mann].
-
-A diferencia de la prueba t de Student, la prueba U de Mann-Whitney permite sacar diferentes conclusiones sobre los datos en función de las suposiciones que se hagan sobre la distribución de los mismos. 
-
-Estas conclusiones pueden ir desde simplemente afirmar si las dos poblaciones difieren hasta determinar si hay diferencias en las medianas entre los grupos. Estas diferentes conclusiones dependen de la forma de las distribuciones de los datos.
+Esta prueba se utiliza como una alternativa a la prueba t de Student, dado que la distribución de las variables sobre las cuales se realizarán las comparaciones no siguen una distribución normal. La prueba evalua las hipótesis:
 
 Hipótesis nula ($H_0$): No hay diferencia significativa entre las distribuciones de las dos muestras. 
 
@@ -431,7 +429,9 @@ Hipótesis alternativa ($H_1$): Existe una diferencia significativa entre las di
 
 Si el valor p resultante es menor que el nivel de significancia predefinido (generalmente 0.05), se rechaza la hipótesis nula, lo que sugiere que hay evidencia suficiente para afirmar que existe una diferencia significativa entre las dos muestras.  
 
-Utilizaremos la prueba suma de rangos de Wilcoxon, la cual se puede encontrar con la función `wilcox.test()`, donde se indican los valores a comparar.
+Se utilizará ésta prueba para comparar los grupos de tratamiento en las respuestas: 
+
+mediante la función `wilcox.test()`, donde se indican los valores a comparar.
 
 Primero crearemos dos subgrupos, uno para cada grupo de tratamiento los cuales contengas las variables sobre las cuales se realizarán las comparaciones.
 </div>
@@ -732,7 +732,9 @@ summary(modelo)
 #summary(modelo2)
 ```
 
-# Gráficas
+# Resultados
+
+# Conclusión
 
 # Diccionario
 
@@ -765,6 +767,23 @@ final=as.table(data)
 kbl(final) %>%
   kable_styling(bootstrap_options = "striped")
 ```
+
+# Cítanos
+
+Entrada de BibTeX para usarios de Latex:
+
+  @Article{bioestadis_R,
+    author = {Humberto Martínez Bautista and Ricardo A. Rodriguez Ojeda and María de Lourdes
+  Delgadillo Hurtado},
+    title = {Comparación estadística entre el video-laringoscopio Pentax AWS y el laringoscopio Macintosh en pacientes con obesidad mórbida},
+    year = {2023},
+    url = {https://doi.org/10.32614/RJ-2021-053},
+    doi = {10.32614/RJ-2021-053},
+    volume = {13},
+    issue = {1},
+    pages = {570-580},
+  }
+
 
 # Referencias
 
